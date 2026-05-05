@@ -108,6 +108,7 @@ a{color:inherit;text-decoration:none}
 }
 
 .main{max-width:1280px;margin:24px auto;padding:0 20px 30px;position:relative}
+.main{z-index:1}
 .page-title{font-size:28px}
 .page-subtitle{color:var(--muted)}
 
@@ -175,6 +176,7 @@ th{color:var(--gold)}
 
 .status-chip{padding:4px 8px;border-radius:999px;border:1px solid var(--gold-soft);font-size:12px}
 .warning{padding:10px 14px;border-radius:10px;background:rgba(31,35,48,.68);border:1px solid #47506b;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.error-note{margin-top:10px;padding:10px 14px;border-radius:10px;background:rgba(74,18,18,.75);border:1px solid #ff6666;color:#ffd2d2}
 .warn-yellow{background:#4a3d11;border-color:#f0cb52;color:#ffe8a3}
 .warn-red{background:#4a1212;border-color:#ff6666;color:#ffd2d2}
 pre{white-space:pre-wrap;color:#ddd;margin:0}
@@ -194,4 +196,5 @@ pre{white-space:pre-wrap;color:#ddd;margin:0}
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .cursor-glow{display:none!important}
   .card{transform:none!important}
+  .reveal{opacity:1!important;transform:none!important}
 }

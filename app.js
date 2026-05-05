@@ -15,6 +15,7 @@ const pages = [
 const dataFiles = ["projects", "novels", "scripts", "shots", "characters", "scenes", "storyboards", "reviews", "costs"];
 const state = { reviews: [] };
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const runtime = { jsonOk: true };
 
 function renderNav() {
   const host = document.getElementById("top-nav");
@@ -24,9 +25,14 @@ function renderNav() {
 }
 
 async function fetchJson(path) {
-  const res = await fetch(path);
-  if (!res.ok) throw new Error(`加载失败: ${path}`);
-  return res.json();
+  try {
+    const res = await fetch(path);
+    if (!res.ok) throw new Error(`加载失败: ${path}`);
+    return res.json();
+  } catch (err) {
+    runtime.jsonOk = false;
+    throw err;
+  }
 }
 
 function rowHtml(obj, cols) {
@@ -84,12 +90,17 @@ function initCardTilt() {
 }
 
 async function renderHome() {
-  const summary = await Promise.all(dataFiles.map(async (n) => [n, (await fetchJson(`./data/${n}.json`)).length]));
+  let summary = [];
+  try {
+    summary = await Promise.all(dataFiles.map(async (n) => [n, (await fetchJson(`./data/${n}.json`)).length]));
+  } catch (_) {
+    summary = dataFiles.map((n) => [n, 0]);
+  }
   const total = summary.reduce((a, [, c]) => a + c, 0);
   document.getElementById("total-items").textContent = total;
   document.getElementById("dataset-count").textContent = summary.length;
-  document.getElementById("project-count").textContent = summary.find(([n]) => n === "projects")[1];
-  document.getElementById("review-count").textContent = summary.find(([n]) => n === "reviews")[1];
+  document.getElementById("project-count").textContent = (summary.find(([n]) => n === "projects") || [null, 0])[1];
+  document.getElementById("review-count").textContent = (summary.find(([n]) => n === "reviews") || [null, 0])[1];
   document.getElementById("home-summary").innerHTML = summary.map(([n, c]) => `<tr><td>${n}.json</td><td>${c}</td></tr>`).join("");
 }
 
@@ -122,6 +133,30 @@ async function renderShots() {
 async function renderCardsPage(jsonPath, hostId, mapFn) {
   const data = await fetchJson(jsonPath);
   document.getElementById(hostId).innerHTML = data.map(mapFn).join("");
+}
+function markSystemStatus() {
+  const host = document.getElementById("system-status");
+  if (!host) return;
+  host.innerHTML = [
+    ["页面主体", "已显示"],
+    ["CSS", "已加载"],
+    ["JS", "已运行"],
+    ["JSON", runtime.jsonOk ? "成功" : "失败（已降级到静态内容）"],
+    ["动效层", prefersReducedMotion ? "已禁用（系统减少动态效果）" : "已启用"]
+  ].map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
+}
+
+function showPageFallback(err) {
+  console.error(err);
+  const main = document.querySelector("main.main");
+  if (main && !document.getElementById("page-fallback")) {
+    main.insertAdjacentHTML("beforeend", `<section id="page-fallback" class="card"><h3>页面已启用备用内容</h3><p class="muted">JSON 或脚本加载异常：${err.message}</p></section>`);
+  }
+  const globalError = document.getElementById("global-error");
+  if (globalError) {
+    globalError.style.display = "block";
+    globalError.textContent = `页面已回退到静态内容：${err.message}`;
+  }
 }
 
 async function renderStoryboard() {
@@ -182,8 +217,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderNav();
   const current = location.pathname.split("/").pop() || "index.html";
   const fn = pageHandlers[current];
-  if (fn) await fn();
-  addRevealTargets();
-  initCursorGlow();
-  initCardTilt();
+  try {
+    if (fn) await fn();
+  } catch (err) {
+    showPageFallback(err);
+  } finally {
+    markSystemStatus();
+    addRevealTargets();
+    initCursorGlow();
+    initCardTilt();
+  }
 });

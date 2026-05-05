@@ -1,0 +1,7 @@
+[
+ {"id":"SH-01","scene":"1-3","type":"近景","duration":"4s","prompt":"雨夜、侧逆光、人物压迫感","status":"待生成"},
+ {"id":"SH-02","scene":"1-4","type":"大全景","duration":"6s","prompt":"港口雾气、灯塔远景","status":"待审核"},
+ {"id":"SH-03","scene":"2-1","type":"中景","duration":"5s","prompt":"机房蓝光、屏幕闪烁","status":"通过"},
+ {"id":"SH-04","scene":"2-5","type":"特写","duration":"3s","prompt":"眼神变化、手持抖动","status":"返工"},
+ {"id":"SH-05","scene":"3-2","type":"跟拍","duration":"7s","prompt":"奔跑追逐、霓虹倒影","status":"待生成"}
+]

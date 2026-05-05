@@ -1,0 +1,6 @@
+[
+ {"id":"S-101","scene":"1-3","beat":"主角发现异常交易","characters":"林岚/顾沉","location":"旧码头","status":"完成"},
+ {"id":"S-102","scene":"2-1","beat":"反派布设陷阱","characters":"周策","location":"地下机房","status":"待优化"},
+ {"id":"S-103","scene":"2-5","beat":"线索反转","characters":"林岚/周策","location":"天桥","status":"待审核"},
+ {"id":"S-104","scene":"3-2","beat":"爆点冲突","characters":"全员","location":"新闻中心","status":"拆解中"}
+]

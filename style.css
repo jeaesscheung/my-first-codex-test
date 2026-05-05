@@ -123,8 +123,8 @@ a{color:inherit;text-decoration:none}
   box-shadow:0 0 0 1px rgba(212,175,55,.2) inset, 0 0 20px rgba(212,175,55,.08);
 }
 
-.main{max-width:1280px;margin:24px auto;padding:0 20px 30px;position:relative}
-.page-title{font-size:28px}
+.main, main{max-width:1280px;margin:24px auto;padding:0 20px 30px;position:relative;z-index:3;opacity:1!important}
+.page-title{font-size:28px;position:relative;z-index:4;opacity:1!important}
 .page-subtitle{color:var(--muted)}
 
 .version-banner{
@@ -154,6 +154,8 @@ a{color:inherit;text-decoration:none}
 .grid.cards-2{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}
 
 .card{
+  z-index:4;
+  opacity:1!important;
   position:relative;
   background:linear-gradient(160deg,var(--panel),var(--panel-2));
   border:1px solid rgba(212,175,55,.2);
@@ -210,6 +212,8 @@ pre{white-space:pre-wrap;color:#ddd;margin:0}
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .cursor-glow{display:none!important}
   .reveal{opacity:1!important;transform:none!important}
-  .card{transform:none!important}
+  .card{
+  z-index:4;
+  opacity:1!important;transform:none!important}
   body::after,.version-banner::after,.card::after{display:none!important}
 }

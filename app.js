@@ -15,6 +15,7 @@ const pages = [
 const dataFiles = ["projects", "novels", "scripts", "shots", "characters", "scenes", "storyboards", "reviews", "costs"];
 const state = { reviews: [] };
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isDesktop = window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches;
 
 function renderNav() {
   const host = document.getElementById("top-nav");
@@ -34,6 +35,7 @@ function rowHtml(obj, cols) {
 }
 
 function addRevealTargets() {
+  if (prefersReducedMotion) return;
   const targets = document.querySelectorAll(".version-banner, .page-title, .page-subtitle, .card, .table-wrap, table");
   targets.forEach((el, i) => {
     el.classList.add("reveal", `delay-${Math.min(i % 5, 4)}`);
@@ -41,7 +43,7 @@ function addRevealTargets() {
 }
 
 function initCursorGlow() {
-  if (prefersReducedMotion) return;
+  if (prefersReducedMotion || !isDesktop) return;
   const glow = document.createElement("div");
   glow.className = "cursor-glow";
   document.body.appendChild(glow);
@@ -66,7 +68,7 @@ function initCursorGlow() {
 }
 
 function initCardTilt() {
-  if (prefersReducedMotion) return;
+  if (prefersReducedMotion || !isDesktop) return;
   const cards = document.querySelectorAll(".card");
   cards.forEach((card) => {
     card.addEventListener("pointermove", (e) => {

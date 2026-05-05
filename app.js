@@ -65,23 +65,6 @@ function initCursorGlow() {
   requestAnimationFrame(tick);
 }
 
-function initCardTilt() {
-  if (prefersReducedMotion) return;
-  const cards = document.querySelectorAll(".card");
-  cards.forEach((card) => {
-    card.addEventListener("pointermove", (e) => {
-      const rect = card.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;
-      const py = (e.clientY - rect.top) / rect.height;
-      const rotY = (px - 0.5) * 6;
-      const rotX = (0.5 - py) * 5;
-      card.style.transform = `translateY(-4px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
-    });
-    card.addEventListener("pointerleave", () => {
-      card.style.transform = "translateY(0) rotateX(0deg) rotateY(0deg)";
-    });
-  });
-}
 
 async function renderHome() {
   const summary = await Promise.all(dataFiles.map(async (n) => [n, (await fetchJson(`./data/${n}.json`)).length]));
@@ -185,5 +168,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (fn) await fn();
   addRevealTargets();
   initCursorGlow();
-  initCardTilt();
 });

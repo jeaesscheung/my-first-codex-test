@@ -24,32 +24,6 @@ body{
   position:relative;
 }
 
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:-3;
-  background-image:
-    linear-gradient(rgba(212,175,55,.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(212,175,55,.08) 1px, transparent 1px);
-  background-size:54px 54px;
-  opacity:.18;
-}
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:-16% -10%;
-  z-index:-2;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 20% 35%, rgba(212,175,55,.08), transparent 44%),
-    radial-gradient(circle at 74% 64%, rgba(212,175,55,.09), transparent 42%),
-    radial-gradient(circle at 48% 82%, rgba(212,175,55,.05), transparent 38%);
-  filter:blur(18px);
-  animation:ambientFloat 18s ease-in-out infinite alternate;
-}
 
 .cursor-glow{
   position:fixed;
@@ -121,16 +95,7 @@ a{color:inherit;text-decoration:none}
   margin-bottom:16px;
   overflow:hidden;
 }
-.version-banner::after,.card::after{
-  content:"";
-  position:absolute;
-  top:0;
-  left:-120%;
-  width:70%;
-  height:100%;
-  background:linear-gradient(110deg, transparent 0%, rgba(255,239,182,.4) 48%, transparent 100%);
-  animation:shineSweep 9s ease-in-out infinite;
-}
+/* v0.3 复杂扫光伪元素已临时移除，避免额外遮挡与性能负担 */
 
 .grid{display:grid;gap:16px}
 .grid.cards-4{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
@@ -146,7 +111,6 @@ a{color:inherit;text-decoration:none}
   box-shadow:0 8px 32px rgba(0,0,0,.35);
   margin-top:12px;
   transition:transform .2s ease, box-shadow .25s ease, border-color .25s ease;
-  transform-style:preserve-3d;
   backdrop-filter: blur(14px) saturate(118%);
   -webkit-backdrop-filter: blur(14px) saturate(118%);
   overflow:hidden;
@@ -179,7 +143,7 @@ th{color:var(--gold)}
 .warn-red{background:#4a1212;border-color:#ff6666;color:#ffd2d2}
 pre{white-space:pre-wrap;color:#ddd;margin:0}
 
-.reveal{opacity:0;transform:translateY(14px);animation:fadeUp .58s ease forwards}
+.reveal{opacity:1;transform:none}
 .reveal.delay-1{animation-delay:.08s}.reveal.delay-2{animation-delay:.16s}.reveal.delay-3{animation-delay:.24s}.reveal.delay-4{animation-delay:.32s}
 
 @supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
@@ -187,8 +151,6 @@ pre{white-space:pre-wrap;color:#ddd;margin:0}
 }
 
 @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-@keyframes shineSweep{0%,64%{left:-120%}100%{left:160%}}
-@keyframes ambientFloat{0%{transform:translate3d(-1%,0,0)}100%{transform:translate3d(1.6%,1.4%,0)}}
 
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}

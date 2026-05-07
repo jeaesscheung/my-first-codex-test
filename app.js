@@ -179,8 +179,13 @@ async function renderCost() {
 
 async function renderDocs() {
   await withJsonFallback(async () => {
-    const docs = await Promise.all([fetch("./docs/continuity-bible-template.md").then((r) => r.text()), fetch("./docs/novel-to-shot-workflow.md").then((r) => r.text())]);
-    document.getElementById("docs-summary").innerHTML = docs.map((t, i) => `<article class="card"><h3>${i === 0 ? "连续性圣经模板" : "小说到镜头流程"}</h3><pre>${t.split("\n").slice(0, 12).join("\n")}</pre></article>`).join("");
+    const docs = [
+      ["连续性圣经模板", "./docs/continuity-bible-template.md"],
+      ["小说到镜头流程", "./docs/novel-to-shot-workflow.md"],
+      ["Cloud 到本地同步", "./docs/cloud-pr-sync-workflow.md"]
+    ];
+    const loadedDocs = await Promise.all(docs.map(async ([title, path]) => [title, await fetch(path).then((r) => r.text())]));
+    document.getElementById("docs-summary").innerHTML = loadedDocs.map(([title, text]) => `<article class="card"><h3>${title}</h3><pre>${text.split("\n").slice(0, 12).join("\n")}</pre></article>`).join("");
   }, () => { document.getElementById("docs-summary").innerHTML = `<article class="card"><h3>文档预览不可用</h3><p class="muted">文档加载失败，已显示回退内容。</p></article>`; });
 }
 

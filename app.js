@@ -1,13 +1,8 @@
 const pages = [
-  ["index.html", "首页"],
-  ["projects.html", "项目管理"],
-  ["novel.html", "小说改编"],
-  ["script.html", "剧本拆解"],
-  ["shots.html", "镜头管理"],
-  ["characters.html", "角色资产库"],
-  ["scenes.html", "场景资产库"],
-  ["storyboard.html", "分镜审核"],
-  ["review.html", "导演审核"],
+  ["index.html", "MoneyTalk 首页"],
+  ["#group-chat", "角色群聊"],
+  ["#characters", "角色梗库"],
+  ["#speaking-lab", "听说训练"],
   ["cost.html", "成本统计"],
   ["docs.html", "制作规范"]
 ];
@@ -21,7 +16,11 @@ function renderNav() {
   const host = document.getElementById("top-nav");
   if (!host) return;
   const current = location.pathname.split("/").pop() || "index.html";
-  host.innerHTML = `<div class="top-nav"><div class="nav-wrap"><div class="brand">金泰 AI 影视制片中台</div><nav class="nav-links">${pages.map(([href, label]) => `<a href="./${href}" class="${href === current ? "active" : ""}">${label}</a>`).join("")}</nav></div></div>`;
+  host.innerHTML = `<div class="top-nav"><div class="nav-wrap"><div class="brand">MoneyTalk Buddy</div><nav class="nav-links">${pages.map(([href, label]) => {
+    const target = href.startsWith("#") ? (current === "index.html" ? href : `./index.html${href}`) : `./${href}`;
+    const active = href === current || (href.startsWith("#") && current === "index.html");
+    return `<a href="${target}" class="${active ? "active" : ""}">${label}</a>`;
+  }).join("")}</nav></div></div>`;
 }
 
 async function fetchJson(path) {
@@ -177,6 +176,145 @@ async function renderCost() {
   });
 }
 
+
+const moneyTopics = [
+  {
+    id: "salary",
+    label: "谈薪不怂",
+    mission: ["听懂 3 个关于 salary 的关键词", "用 I would like to... 提出一个诉求", "用一个轻松梗化解紧张"],
+    messages: [
+      ["老板马总", "If you want a raise, show me the value first. Money does not grow on office plants.", "老板端着保温杯：先别激动，先讲 ROI。"],
+      ["财迷小美", "I bring value, good vibes, and emergency snacks. Can we discuss a fair salary adjustment?", "把涨薪说得像报菜名，但很专业。"],
+      ["气氛组阿强", "My wallet is so thin, it has started doing yoga.", "钱包练瑜伽：主打一个轻盈。"]
+    ]
+  },
+  {
+    id: "budget",
+    label: "预算大作战",
+    mission: ["说出 needs 与 wants 的区别", "用 I can cut down on... 做预算", "给朋友一个不说教的建议"],
+    messages: [
+      ["预算姐", "A budget is not a prison. It is a GPS for your money.", "预算不是牢笼，是导航。别把钱开进沟里。"],
+      ["月光小王", "I only bought one coffee. The other six were emotional support.", "咖啡：我不是消费，我是精神股东。"],
+      ["理财嘴替", "Try the 50-30-20 rule: needs, wants, and savings.", "规则很正经，执行靠气氛。"]
+    ]
+  },
+  {
+    id: "bargain",
+    label: "砍价王者",
+    mission: ["听懂 discount / final price", "礼貌提出 Can you do...?", "用一句幽默话收尾"],
+    messages: [
+      ["砍价王大爷", "Can you do twenty dollars? My budget is crying in English.", "预算已经哭出伦敦腔。"],
+      ["摊主 Lisa", "That is a bold offer, but I respect the confidence.", "砍得狠，但气质拿捏了。"],
+      ["围观阿强", "This negotiation has more drama than my group chat.", "这场面，比群聊退群还刺激。"]
+    ]
+  }
+];
+
+const moneyCharacters = [
+  ["💼", "老板马总", "ROI 挂嘴边", "Show me the value first.", "负责制造谈薪压力，但会给用户结构化反馈。"],
+  ["🧧", "财迷小美", "省钱也要体面", "Every yuan needs a mission.", "擅长把预算说成生活美学。"],
+  ["🛒", "砍价王大爷", "不砍不舒服", "Can you make it friendlier?", "把 bargain 练成脱口秀。"],
+  ["🎤", "气氛组阿强", "钱包薄但嘴甜", "My wallet needs a vacation.", "用梗降低开口焦虑。"],
+  ["📈", "理财嘴替", "冷静但不扫兴", "Small habits compound.", "把投资、储蓄讲成人话。"],
+  ["☕", "月光小王", "冲动消费本人", "It was on sale, so I saved money... kind of.", "负责贡献反面教材和真实共鸣。"]
+];
+
+const speakingDrills = [
+  ["谈薪", "I would like to discuss a fair salary adjustment.", "我想聊聊合理的薪资调整。", "替换 fair salary adjustment 为 bonus / hourly rate。"],
+  ["预算", "I need to cut down on impulse spending this month.", "这个月我需要减少冲动消费。", "补一句 because... 说出你的原因。"],
+  ["AA", "Let's split the bill evenly, unless someone ordered lobster.", "我们平均分账吧，除非有人点了龙虾。", "用 unless 开一个玩笑。"],
+  ["砍价", "Could you give me a small discount if I pay today?", "如果我今天付款，能给我一点折扣吗？", "把 small 改成 student / cash / friendly。"]
+];
+
+const improvPrompts = [
+  "Your friend wants to borrow money again. What would you say politely?",
+  "You found a great deal, but you do not need it. Talk yourself out of it.",
+  "Ask your boss for a raise in one confident sentence.",
+  "Explain your monthly budget like you are hosting a comedy show.",
+  "Convince the group to choose a cheaper restaurant without sounding cheap."
+];
+
+function renderChat(topic) {
+  const chatHosts = [document.getElementById("hero-chat"), document.getElementById("main-chat")].filter(Boolean);
+  chatHosts.forEach((host) => {
+    host.innerHTML = topic.messages.map(([name, english, joke], index) => `
+      <article class="chat-bubble ${index % 2 ? "right" : "left"}">
+        <b>${name}</b>
+        <p>${english}</p>
+        <small>${joke}</small>
+      </article>
+    `).join("");
+  });
+  const mission = document.getElementById("mission-list");
+  if (mission) mission.innerHTML = topic.mission.map((item) => `<li>${item}</li>`).join("");
+}
+
+function speakText(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  utterance.rate = 0.92;
+  window.speechSynthesis.speak(utterance);
+}
+
+function renderMoneyTalkHome() {
+  const tabs = document.getElementById("topic-tabs");
+  if (tabs) {
+    tabs.innerHTML = moneyTopics.map((topic, index) => `<button class="mini-btn ${index === 0 ? "selected" : ""}" data-topic="${topic.id}">${topic.label}</button>`).join("");
+    tabs.onclick = (event) => {
+      const btn = event.target.closest("button[data-topic]");
+      if (!btn) return;
+      tabs.querySelectorAll("button").forEach((one) => one.classList.remove("selected"));
+      btn.classList.add("selected");
+      renderChat(moneyTopics.find((topic) => topic.id === btn.dataset.topic) || moneyTopics[0]);
+    };
+  }
+  renderChat(moneyTopics[0]);
+
+  const characters = document.getElementById("money-characters");
+  if (characters) {
+    characters.innerHTML = moneyCharacters.map(([emoji, name, hook, line, note]) => `
+      <article class="card role-card">
+        <div class="role-emoji">${emoji}</div>
+        <h3>${name}</h3>
+        <p><b>梗点：</b>${hook}</p>
+        <p class="quote">“${line}”</p>
+        <p class="muted">${note}</p>
+        <button class="mini-btn speak-btn" data-say="${line}">听一句</button>
+      </article>
+    `).join("");
+  }
+
+  const drills = document.getElementById("drill-list");
+  if (drills) {
+    drills.innerHTML = speakingDrills.map(([tag, english, chinese, task]) => `
+      <article class="drill-card">
+        <span>${tag}</span>
+        <h3>${english}</h3>
+        <p>${chinese}</p>
+        <small>${task}</small>
+        <button class="mini-btn speak-btn" data-say="${english}">播放英文</button>
+      </article>
+    `).join("");
+  }
+
+  document.body.addEventListener("click", (event) => {
+    const speakBtn = event.target.closest(".speak-btn[data-say]");
+    if (speakBtn) speakText(speakBtn.dataset.say);
+  });
+
+  const randomPrompt = document.getElementById("random-prompt");
+  const promptOutput = document.getElementById("prompt-output");
+  if (randomPrompt && promptOutput) {
+    randomPrompt.onclick = () => {
+      const next = improvPrompts[Math.floor(Math.random() * improvPrompts.length)];
+      promptOutput.textContent = next;
+      speakText(next);
+    };
+  }
+}
+
 async function renderDocs() {
   await withJsonFallback(async () => {
     const docs = [
@@ -190,7 +328,7 @@ async function renderDocs() {
 }
 
 const pageHandlers = {
-  "index.html": renderHome,
+  "index.html": renderMoneyTalkHome,
   "projects.html": renderProjects,
   "novel.html": renderNovels,
   "script.html": renderScripts,

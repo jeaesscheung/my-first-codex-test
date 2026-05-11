@@ -217,3 +217,32 @@ pre{white-space:pre-wrap;color:#ddd;margin:0}
   opacity:1!important;transform:none!important}
   body::after,.version-banner::after,.card::after{display:none!important}
 }
+
+/* MoneyTalk Buddy app prototype */
+.money-app{
+  background:
+    radial-gradient(circle at 15% 10%, rgba(54, 211, 153, .16), transparent 28%),
+    radial-gradient(circle at 80% 20%, rgba(212, 175, 55, .18), transparent 34%),
+    linear-gradient(135deg, #08110d 0%, #0c0c12 48%, #181107 100%);
+}
+
+.app-shell{display:flex;flex-direction:column;gap:20px}
+.app-hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.72fr);gap:26px;align-items:center}
+.hero-copy{min-width:0}.eyebrow{text-transform:uppercase;letter-spacing:.18em;color:#7de2b8;font-size:12px;font-weight:800;margin:0 0 8px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.primary-cta,.secondary-cta{border-radius:999px;padding:12px 18px;font-weight:800;border:1px solid rgba(212,175,55,.42)}
+.primary-cta{background:linear-gradient(135deg,#d4af37,#7de2b8);color:#07110c;box-shadow:0 14px 34px rgba(125,226,184,.18)}
+.secondary-cta{background:rgba(255,255,255,.05);color:var(--text)}
+.phone-preview{border:1px solid rgba(125,226,184,.24);border-radius:32px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));box-shadow:0 22px 70px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.04)}
+.phone-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:#fff}.phone-top span{width:42px;height:6px;border-radius:999px;background:rgba(255,255,255,.28)}.phone-top b{flex:1}.phone-top em{font-style:normal;color:#7de2b8;font-size:12px}
+.voice-bar{margin-top:12px;border-radius:18px;background:rgba(125,226,184,.14);border:1px solid rgba(125,226,184,.28);padding:12px;display:flex;justify-content:space-between;color:#d9fff0}
+.metric-row{margin-top:0}.stat-card span{color:#7de2b8;font-size:13px;font-weight:800}.stat-card strong{display:block;font-size:34px;margin:6px 0}.stat-card p{color:var(--muted);margin:0}
+.app-section{scroll-margin-top:92px}.section-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px}.section-head h2{margin:0 0 8px;font-size:24px}.topic-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.mini-btn.selected{background:rgba(125,226,184,.18);border-color:rgba(125,226,184,.7);color:#d9fff0}
+.chat-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px}.chat-window{min-height:360px;border:1px solid rgba(212,175,55,.18);border-radius:20px;padding:16px;background:rgba(4,7,6,.36);display:flex;flex-direction:column;gap:12px}.compact-chat{min-height:360px}.chat-bubble{max-width:78%;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:12px;background:rgba(255,255,255,.07)}.chat-bubble.right{align-self:flex-end;background:rgba(125,226,184,.12);border-color:rgba(125,226,184,.22)}.chat-bubble b{display:block;color:#7de2b8;margin-bottom:6px}.chat-bubble p{margin:0 0 6px;line-height:1.5}.chat-bubble small{color:var(--muted)}
+.prompt-panel{border:1px solid rgba(125,226,184,.22);border-radius:18px;background:rgba(125,226,184,.07);padding:16px}.prompt-panel h3{color:#7de2b8;margin-top:0}.prompt-panel li{margin-bottom:10px}.speech-prompt{margin-top:12px;padding:12px;border-radius:14px;background:rgba(0,0,0,.22);line-height:1.55}
+.role-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.role-card{min-height:250px}.role-emoji{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;background:rgba(125,226,184,.14);font-size:28px;margin-bottom:12px}.quote{color:#fff;font-weight:800;line-height:1.5}
+.speaking-lab{background:linear-gradient(160deg,rgba(125,226,184,.12),rgba(212,175,55,.08))}.drill-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.drill-card{border:1px solid rgba(255,255,255,.11);border-radius:18px;padding:16px;background:rgba(0,0,0,.24)}.drill-card span{color:#7de2b8;font-size:12px;font-weight:900}.drill-card h3{color:#fff;margin:8px 0;line-height:1.45}.drill-card p{color:#f6e7b8}.drill-card small{display:block;color:var(--muted);margin-bottom:12px}.feature-card p{color:var(--muted);line-height:1.6}
+
+@media (max-width: 860px){
+  .app-hero,.chat-layout{grid-template-columns:1fr}.section-head{display:block}.topic-tabs{justify-content:flex-start}.phone-preview{border-radius:24px}.chat-window,.compact-chat{min-height:auto}.chat-bubble{max-width:94%}
+}

@@ -521,14 +521,153 @@ async function renderDocs() {
   }, () => { document.getElementById("docs-summary").innerHTML = `<article class="card"><h3>文档预览不可用</h3><p class="muted">文档加载失败，已显示回退内容。</p></article>`; });
 }
 
+const workflowDetails = {
+  "projects.html": {
+    kicker: "制片总控台 · Pipeline",
+    title: "从立项到交付的项目真实流转",
+    summary: "把项目拆成可追踪的制片阶段：剧本、资产、镜头、审核与成本同时回写，制片人可以在同一页判断卡点。",
+    image: ["项目看板", "里程碑", "#d4af37", "#68dfff"],
+    steps: ["立项建档", "剧本排期", "资产锁定", "镜头生成", "审核交付"],
+    panels: [
+      ["输入", "项目 brief、预算上限、交付日期、主创名单"],
+      ["处理", "按阶段同步负责人、截止日、风险等级与返工状态"],
+      ["产出", "每日制片日报、逾期预警、跨部门待办列表"]
+    ]
+  },
+  "novel.html": {
+    kicker: "小说改编 · Story Pipeline",
+    title: "原著文本到可拍剧集结构",
+    summary: "将小说章节拆成核心冲突、人物动机和单集钩子，保留不可改动设定，再推送给剧本拆解。",
+    image: ["文本解析", "冲突曲线", "#b55cff", "#d4af37"],
+    steps: ["导入章节", "提取人物", "冲突归纳", "单集大纲", "锁定设定"],
+    panels: [
+      ["输入", "原著章节、人物小传、版权禁改条款"],
+      ["处理", "提炼每集情绪峰值、反转点和必须保留台词"],
+      ["产出", "剧集大纲、角色弧光、可拍场景候选池"]
+    ]
+  },
+  "script.html": {
+    kicker: "剧本拆解 · Production Breakdown",
+    title: "场次、角色、地点与节拍拆成生产清单",
+    summary: "每个节拍都绑定角色、地点、情绪和镜头需求，自动向资产库与镜头管理发出准备任务。",
+    image: ["场次拆条", "节拍矩阵", "#68dfff", "#ff6b9a"],
+    steps: ["场次编号", "节拍识别", "角色绑定", "场景绑定", "镜头需求"],
+    panels: [
+      ["输入", "单集剧本、对白、动作描述、场景标题"],
+      ["处理", "拆分冲突节拍，标注出场角色、道具、情绪变化"],
+      ["产出", "拍摄清单、资产需求单、镜头提示词草案"]
+    ]
+  },
+  "shots.html": {
+    kicker: "镜头管理 · Shot Pipeline",
+    title: "提示词、景别、时长与生成状态闭环",
+    summary: "从剧本节拍派生镜头，记录景别、运动、光线和生成状态，返工原因会回流到分镜审核。",
+    image: ["镜头队列", "生成状态", "#d4af37", "#b55cff"],
+    steps: ["镜头规划", "Prompt 组装", "批量生成", "质检标注", "返工入队"],
+    panels: [
+      ["输入", "场次节拍、角色连续性、场景灯光、镜头语言"],
+      ["处理", "组合镜头提示词，按待生成/待审核/返工过滤队列"],
+      ["产出", "可审核镜头包、返工提示词、通过镜头编号"]
+    ]
+  },
+  "characters.html": {
+    kicker: "角色资产 · Continuity Bible",
+    title: "角色外观、服装与禁改规则锁定",
+    summary: "角色卡不仅记录描述，还把不可变特征转成审核条件，避免生成镜头中出现换脸、换服装或伤痕丢失。",
+    image: ["角色图谱", "连续性锁", "#ff6b9a", "#d4af37"],
+    steps: ["角色建档", "外观锁定", "服装锁定", "伤痕追踪", "镜头校验"],
+    panels: [
+      ["输入", "角色小传、参考图、服装规则、剧情状态"],
+      ["处理", "生成角色连续性检查项，并绑定每个出场镜头"],
+      ["产出", "角色资产卡、禁改清单、跨集连续性备注"]
+    ]
+  },
+  "scenes.html": {
+    kicker: "场景资产 · Environment Bible",
+    title: "空间、光源、道具与 LOGO 遮挡规则统一",
+    summary: "每个场景沉淀为可复用资产：空间布局、光照方向、关键道具和禁改项都会参与镜头生成。",
+    image: ["场景地图", "灯光配置", "#68dfff", "#d4af37"],
+    steps: ["场景建档", "空间布局", "灯光方向", "道具锁定", "出镜校验"],
+    panels: [
+      ["输入", "场景设定、平面布局、灯光参考、道具清单"],
+      ["处理", "把环境约束写入镜头提示词与分镜检查表"],
+      ["产出", "场景资产卡、道具连续性、灯光一致性标准"]
+    ]
+  },
+  "storyboard.html": {
+    kicker: "分镜审核 · Continuity Gate",
+    title: "用连续性规则校验每一条镜头",
+    summary: "分镜审核把角色、场景、服装、节奏和导演备注合并判断，通过后进入导演终审，返工则回到镜头队列。",
+    image: ["分镜墙", "连续性检测", "#b55cff", "#68dfff"],
+    steps: ["镜头接收", "规则比对", "问题标注", "导演备注", "状态回写"],
+    panels: [
+      ["输入", "镜头编号、角色状态、场景资产、上一镜头关系"],
+      ["处理", "检查服装、道具、景别、节奏和视觉连续性"],
+      ["产出", "通过列表、返工原因、导演调整建议"]
+    ]
+  },
+  "review.html": {
+    kicker: "导演审核 · Decision Pipeline",
+    title: "导演意见直接驱动通过、返工或废弃",
+    summary: "导演可以对镜头、分镜和资产给出最终意见，页面按钮模拟真实审核状态回写。",
+    image: ["导演监看", "决策回写", "#d4af37", "#ff6b9a"],
+    steps: ["提交审核", "导演查看", "意见记录", "状态决策", "任务回流"],
+    panels: [
+      ["输入", "待审镜头包、分镜表、制作备注、返工历史"],
+      ["处理", "选择通过/返工/废弃，并保留导演口径"],
+      ["产出", "最终状态、返工任务、可交付镜头清单"]
+    ]
+  },
+  "cost.html": {
+    kicker: "成本统计 · Finance Pipeline",
+    title: "预算、实际花费与返工率联动预警",
+    summary: "成本页把生成、审核和返工数据汇总成风险指标，帮助制片及时调整排期和预算。",
+    image: ["成本雷达", "风险预警", "#68dfff", "#d4af37"],
+    steps: ["预算录入", "实际同步", "返工统计", "风险判断", "制片调整"],
+    panels: [
+      ["输入", "预算项、实际支出、返工率、供应商成本"],
+      ["处理", "计算平均返工率，并按阈值输出黄色/红色预警"],
+      ["产出", "成本风险表、超支原因、下一轮预算建议"]
+    ]
+  }
+};
+
+function workflowVisualSvg([title, subtitle, colorA, colorB]) {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="${title}"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#080b14"/><stop offset="1" stop-color="#15101e"/></linearGradient><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${colorA}"/><stop offset="1" stop-color="${colorB}"/></linearGradient><filter id="blur"><feGaussianBlur stdDeviation="12"/></filter></defs><rect width="640" height="360" fill="url(#bg)"/><circle cx="118" cy="92" r="92" fill="${colorA}" opacity=".2" filter="url(#blur)"/><circle cx="516" cy="278" r="130" fill="${colorB}" opacity=".16" filter="url(#blur)"/><g opacity=".2" stroke="${colorB}">${Array.from({length: 14}, (_, i) => `<path d="M${i * 54 - 80} 360 L${i * 54 + 90} 0"/>`).join("")}</g><g fill="none" stroke="url(#g)" stroke-width="4"><rect x="72" y="88" width="128" height="82" rx="18"/><rect x="256" y="138" width="128" height="82" rx="18"/><rect x="440" y="88" width="128" height="82" rx="18"/><path d="M202 130 C232 104 234 194 256 176"/><path d="M386 176 C416 206 414 116 440 130"/></g><g fill="url(#g)"><circle cx="136" cy="129" r="12"/><circle cx="320" cy="179" r="12"/><circle cx="504" cy="129" r="12"/></g><text x="72" y="268" fill="#f5f3ee" font-size="38" font-family="Arial, sans-serif" font-weight="700">${title}</text><text x="72" y="310" fill="#d4af37" font-size="24" font-family="Arial, sans-serif">${subtitle}</text></svg>`)}`;
+}
+
+function renderWorkflowSection() {
+  const current = location.pathname.split("/").pop() || "index.html";
+  const detail = workflowDetails[current];
+  const main = document.querySelector("main");
+  if (!detail || !main || document.querySelector(".workflow-section")) return;
+  const section = document.createElement("section");
+  section.className = "workflow-section card";
+  section.innerHTML = `
+    <div class="workflow-copy">
+      <p class="eyebrow">${detail.kicker}</p>
+      <h2>${detail.title}</h2>
+      <p>${detail.summary}</p>
+    </div>
+    <img class="workflow-hero-img" src="${workflowVisualSvg(detail.image)}" alt="${detail.image[0]}示意图" loading="lazy" />
+    <ol class="pipeline-steps" aria-label="真实工作流 Pipeline">
+      ${detail.steps.map((step, index) => `<li style="--i:${index}"><span>${String(index + 1).padStart(2, "0")}</span><b>${step}</b></li>`).join("")}
+    </ol>
+    <div class="workflow-panels">
+      ${detail.panels.map(([label, text]) => `<article><h3>${label}</h3><p>${text}</p></article>`).join("")}
+    </div>`;
+  const anchor = main.querySelector("section.card, section.grid") || main.lastElementChild;
+  if (anchor) anchor.insertAdjacentElement("afterend", section); else main.appendChild(section);
+}
+
 const pageHandlers = {
   "index.html": renderHome,
   "projects.html": renderProjects,
   "novel.html": renderNovels,
   "script.html": renderScripts,
   "shots.html": renderShots,
-  "characters.html": () => renderCardsPage("./data/characters.json", "characters-grid", (c) => `<article class="card"><h3>${c.name}</h3><p><b>外貌：</b>${c.appearance}</p><p><b>服装：</b>${c.costume}</p><p><b>禁改规则：</b>${c.lockedRules}</p><p class="muted"><b>连续性备注：</b>${c.continuityNote}</p></article>`, "角色数据加载失败，已显示回退内容。"),
-  "scenes.html": () => renderCardsPage("./data/scenes.json", "scenes-grid", (s) => `<article class="card"><h3>${s.name}</h3><p><b>空间布局：</b>${s.layout}</p><p><b>光源方向：</b>${s.lightDirection}</p><p><b>关键道具：</b>${s.keyProps}</p><p class="muted"><b>禁改规则：</b>${s.lockedRules}</p></article>`, "场景数据加载失败，已显示回退内容。"),
+  "characters.html": () => renderCardsPage("./data/characters.json", "characters-grid", (c, i) => `<article class="card asset-card"><img class="asset-thumb" src="${workflowVisualSvg([c.name, "角色资产卡", i % 2 ? "#68dfff" : "#ff6b9a", "#d4af37"])}" alt="${c.name}角色参考图" loading="lazy" /><h3>${c.name}</h3><p><b>外貌：</b>${c.appearance}</p><p><b>服装：</b>${c.costume}</p><p><b>禁改规则：</b>${c.lockedRules}</p><p class="muted"><b>连续性备注：</b>${c.continuityNote}</p></article>`, "角色数据加载失败，已显示回退内容。"),
+  "scenes.html": () => renderCardsPage("./data/scenes.json", "scenes-grid", (s, i) => `<article class="card asset-card"><img class="asset-thumb" src="${workflowVisualSvg([s.name, "场景资产卡", "#68dfff", i % 2 ? "#b55cff" : "#d4af37"])}" alt="${s.name}场景参考图" loading="lazy" /><h3>${s.name}</h3><p><b>空间布局：</b>${s.layout}</p><p><b>光源方向：</b>${s.lightDirection}</p><p><b>关键道具：</b>${s.keyProps}</p><p class="muted"><b>禁改规则：</b>${s.lockedRules}</p></article>`, "场景数据加载失败，已显示回退内容。"),
   "storyboard.html": renderStoryboard,
   "review.html": renderReview,
   "cost.html": renderCost,
@@ -540,6 +679,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const current = location.pathname.split("/").pop() || "index.html";
   const fn = pageHandlers[current];
   await withJsonFallback(async () => { if (fn) await fn(); }, () => {});
+  renderWorkflowSection();
   addRevealTargets();
   initParticleEffects();
   initCursorGlow();

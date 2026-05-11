@@ -13,7 +13,7 @@ const pages = [
 ];
 
 const dataFiles = ["projects", "novels", "scripts", "shots", "characters", "scenes", "storyboards", "reviews", "costs"];
-const state = { reviews: [], jsonStatus: "成功" };
+const state = { reviews: [], jsonStatus: "成功", fxStatus: "粒子水墨背景 / 鼠标粒子跟随已启用" };
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const isDesktop = window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches;
 
@@ -38,6 +38,154 @@ function addRevealTargets() {
   if (prefersReducedMotion) return;
   const targets = document.querySelectorAll(".version-banner, .page-title, .page-subtitle, .card, .table-wrap, table");
   targets.forEach((el, i) => el.classList.add("reveal", `delay-${Math.min(i % 5, 4)}`));
+}
+
+function initParticleEffects() {
+  if (prefersReducedMotion) return;
+
+  const bgCanvas = document.createElement("canvas");
+  const trailCanvas = document.createElement("canvas");
+  bgCanvas.className = "fx-canvas fx-ink-bg";
+  trailCanvas.className = "fx-canvas fx-cursor-trail";
+  bgCanvas.setAttribute("aria-hidden", "true");
+  trailCanvas.setAttribute("aria-hidden", "true");
+  document.body.prepend(trailCanvas);
+  document.body.prepend(bgCanvas);
+
+  const bg = bgCanvas.getContext("2d");
+  const trail = trailCanvas.getContext("2d");
+  const palette = [
+    "rgba(212,175,55,",
+    "rgba(104,223,255,",
+    "rgba(181,92,255,",
+    "rgba(255,107,154,",
+    "rgba(110,255,191,"
+  ];
+  const inkBlots = [];
+  const cursorParticles = [];
+  const pointer = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.35, active: false };
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+
+  const setCanvasSize = (canvas) => {
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  const resize = () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    setCanvasSize(bgCanvas);
+    setCanvasSize(trailCanvas);
+    inkBlots.length = 0;
+    const count = Math.min(34, Math.max(18, Math.floor(width / 54)));
+    for (let i = 0; i < count; i += 1) {
+      inkBlots.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: 70 + Math.random() * 210,
+        vx: (Math.random() - 0.5) * 0.22,
+        vy: (Math.random() - 0.5) * 0.18,
+        hue: palette[i % palette.length],
+        alpha: 0.035 + Math.random() * 0.075,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  };
+
+  const spawnCursorParticles = (x, y, amount = 3) => {
+    if (!isDesktop) return;
+    for (let i = 0; i < amount; i += 1) {
+      cursorParticles.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 1.7,
+        vy: (Math.random() - 0.5) * 1.7,
+        r: 2 + Math.random() * 5,
+        life: 1,
+        decay: 0.014 + Math.random() * 0.016,
+        hue: palette[Math.floor(Math.random() * palette.length)]
+      });
+    }
+    if (cursorParticles.length > 180) cursorParticles.splice(0, cursorParticles.length - 180);
+  };
+
+  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("pointermove", (e) => {
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.active = true;
+    spawnCursorParticles(pointer.x, pointer.y, 4);
+  }, { passive: true });
+  window.addEventListener("pointerleave", () => { pointer.active = false; }, { passive: true });
+
+  resize();
+
+  const render = (time = 0) => {
+    bg.clearRect(0, 0, width, height);
+    bg.globalCompositeOperation = "lighter";
+    inkBlots.forEach((b, i) => {
+      b.x += b.vx;
+      b.y += b.vy;
+      if (b.x < -b.r) b.x = width + b.r;
+      if (b.x > width + b.r) b.x = -b.r;
+      if (b.y < -b.r) b.y = height + b.r;
+      if (b.y > height + b.r) b.y = -b.r;
+      const pulse = Math.sin(time * 0.00045 + b.phase) * 0.18 + 1;
+      const r = b.r * pulse;
+      const gradient = bg.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
+      gradient.addColorStop(0, `${b.hue}${b.alpha})`);
+      gradient.addColorStop(0.42, `${b.hue}${b.alpha * 0.42})`);
+      gradient.addColorStop(1, `${b.hue}0)`);
+      bg.fillStyle = gradient;
+      bg.beginPath();
+      const wobble = Math.sin(time * 0.0007 + i) * 12;
+      bg.ellipse(b.x, b.y, r * (0.82 + (i % 3) * 0.08), r * (0.45 + (i % 4) * 0.06), b.phase + wobble * 0.01, 0, Math.PI * 2);
+      bg.fill();
+    });
+
+    if (pointer.active && isDesktop) {
+      const glow = bg.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 170);
+      glow.addColorStop(0, "rgba(255,239,182,.16)");
+      glow.addColorStop(0.55, "rgba(181,92,255,.06)");
+      glow.addColorStop(1, "rgba(181,92,255,0)");
+      bg.fillStyle = glow;
+      bg.beginPath();
+      bg.arc(pointer.x, pointer.y, 170, 0, Math.PI * 2);
+      bg.fill();
+    }
+
+    trail.clearRect(0, 0, width, height);
+    trail.globalCompositeOperation = "lighter";
+    for (let i = cursorParticles.length - 1; i >= 0; i -= 1) {
+      const p = cursorParticles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy -= 0.006;
+      p.life -= p.decay;
+      if (p.life <= 0) {
+        cursorParticles.splice(i, 1);
+        continue;
+      }
+      const gradient = trail.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 7);
+      gradient.addColorStop(0, `${p.hue}${0.32 * p.life})`);
+      gradient.addColorStop(1, `${p.hue}0)`);
+      trail.fillStyle = gradient;
+      trail.beginPath();
+      trail.arc(p.x, p.y, p.r * (1 + (1 - p.life) * 2.3), 0, Math.PI * 2);
+      trail.fill();
+    }
+
+    requestAnimationFrame(render);
+  };
+
+  requestAnimationFrame(render);
 }
 
 function initCursorGlow() {
@@ -116,7 +264,7 @@ async function renderHome() {
     document.getElementById("home-summary").innerHTML = summary.map(([n, c]) => `<tr><td>${n}.json</td><td>${c}</td></tr>`).join("");
   }
   const status = document.getElementById("system-status");
-  if (status) status.innerHTML = `<li>页面主体：已显示</li><li>CSS：已加载</li><li>JS：已运行</li><li>JSON：${state.jsonStatus}</li><li>动效层：已启用</li>`;
+  if (status) status.innerHTML = `<li>页面主体：已显示</li><li>CSS：已加载</li><li>JS：已运行</li><li>JSON：${state.jsonStatus}</li><li>动效层：${state.fxStatus}</li>`;
 }
 
 async function renderProjects() {
@@ -209,6 +357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const fn = pageHandlers[current];
   await withJsonFallback(async () => { if (fn) await fn(); }, () => {});
   addRevealTargets();
+  initParticleEffects();
   initCursorGlow();
   initCardTilt();
 });

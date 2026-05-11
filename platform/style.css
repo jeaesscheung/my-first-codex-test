@@ -399,3 +399,169 @@ body.particle-fx-ready::after{
   .section-fx::before,
   .card::before{animation:none!important}
 }
+
+.eyebrow{
+  margin:0 0 8px;
+  color:var(--gold);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.workflow-section{
+  display:grid;
+  grid-template-columns:minmax(0,1.04fr) minmax(280px,.96fr);
+  gap:18px;
+  align-items:center;
+  margin-top:22px;
+}
+
+.workflow-copy h2{
+  margin:0 0 10px;
+  font-size:24px;
+}
+
+.workflow-copy p:not(.eyebrow){
+  color:var(--muted);
+  line-height:1.7;
+  margin:0;
+}
+
+.workflow-hero-img,
+.asset-thumb{
+  width:100%;
+  display:block;
+  border:1px solid rgba(212,175,55,.24);
+  border-radius:14px;
+  background:rgba(8,11,20,.68);
+  box-shadow:0 18px 42px rgba(0,0,0,.28), 0 0 28px rgba(104,223,255,.08);
+}
+
+.workflow-hero-img{
+  min-height:210px;
+  object-fit:cover;
+}
+
+.pipeline-steps{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(120px,1fr));
+  gap:10px;
+  list-style:none;
+  padding:0;
+  margin:6px 0 0;
+  counter-reset:step;
+}
+
+.pipeline-steps li{
+  position:relative;
+  min-height:78px;
+  padding:14px 14px 14px 16px;
+  border:1px solid rgba(212,175,55,.25);
+  border-radius:14px;
+  background:linear-gradient(145deg, rgba(104,223,255,.11), rgba(181,92,255,.08));
+  overflow:hidden;
+}
+
+.pipeline-steps li::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(212,175,55,.26), transparent 58%);
+  transform:translateX(-100%);
+  animation:pipelinePulse 5.8s ease-in-out infinite;
+  animation-delay:calc(var(--i, 0) * .32s);
+}
+
+.pipeline-steps li:not(:last-child)::after{
+  content:"→";
+  position:absolute;
+  right:-14px;
+  top:50%;
+  z-index:2;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  transform:translateY(-50%);
+  color:#080b14;
+  background:var(--gold);
+  box-shadow:0 0 18px rgba(212,175,55,.35);
+}
+
+.pipeline-steps span,
+.pipeline-steps b{
+  position:relative;
+  z-index:1;
+  display:block;
+}
+
+.pipeline-steps span{
+  color:var(--gold);
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.pipeline-steps b{
+  font-size:16px;
+}
+
+.workflow-panels{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+
+.workflow-panels article{
+  padding:14px;
+  border:1px solid rgba(104,223,255,.18);
+  border-radius:14px;
+  background:rgba(8,11,20,.48);
+}
+
+.workflow-panels h3{
+  margin:0 0 8px;
+  color:var(--gold);
+}
+
+.workflow-panels p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.65;
+}
+
+.asset-card{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.asset-thumb{
+  aspect-ratio:16 / 9;
+  object-fit:cover;
+}
+
+@keyframes pipelinePulse{
+  0%, 42%{transform:translateX(-100%);opacity:.15}
+  64%{transform:translateX(0);opacity:.75}
+  100%{transform:translateX(105%);opacity:.12}
+}
+
+@media (max-width: 900px){
+  .workflow-section{
+    grid-template-columns:1fr;
+  }
+  .pipeline-steps,
+  .workflow-panels{
+    grid-template-columns:1fr;
+  }
+  .pipeline-steps li:not(:last-child)::after{
+    right:16px;
+    top:auto;
+    bottom:-14px;
+    transform:rotate(90deg);
+  }
+}

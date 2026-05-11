@@ -1,0 +1,5 @@
+[
+ {"name":"旧码头仓库","layout":"两层钢架+中部货箱通道","lightDirection":"左后45°冷白主光","keyProps":"旧吊灯、红色浮标、生锈铁门","lockedRules":"货箱编号A17必须保留"},
+ {"name":"地下机房","layout":"中央主机阵列+环形检修道","lightDirection":"顶部蓝光条向下","keyProps":"监控墙、故障电缆、警报灯","lockedRules":"主机序列号B09不可修改"},
+ {"name":"新闻中心大厅","layout":"前台+旋转门+双侧导播区","lightDirection":"右前方暖光补光","keyProps":"直播屏、麦克风车、导播台","lockedRules":"LOGO墙保持完整无遮挡"}
+]

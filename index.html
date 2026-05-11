@@ -23,7 +23,13 @@
       <aside class="phone-preview" aria-label="喜人数字人群聊预览">
         <div class="phone-top"><span></span><b>喜人热梗聊天室</b><em>Hot</em></div>
         <div id="hero-chat" class="chat-window compact-chat"></div>
-        <div class="voice-bar"><span>Tap a line to shadow</span><strong>🎭 English mode</strong></div>
+        <div class="voice-bar voice-picker-card">
+          <label for="voice-picker-hero">Voice Picker</label>
+          <select id="voice-picker-hero" data-voice-picker aria-label="选择英文朗读音色">
+            <option value="">Loading English voices…</option>
+          </select>
+          <strong id="voice-status" data-voice-status>Default: en-US</strong>
+        </div>
       </aside>
     </section>
 
@@ -48,6 +54,12 @@
         <aside class="prompt-panel">
           <h3>你的口语任务</h3>
           <ol id="mission-list"></ol>
+          <div class="voice-control-row">
+            <label for="voice-picker-chat">朗读音色</label>
+            <select id="voice-picker-chat" data-voice-picker aria-label="选择聊天朗读英文音色">
+              <option value="">Loading English voices…</option>
+            </select>
+          </div>
           <button id="random-prompt" class="mini-btn">换一个热点追问</button>
           <p id="prompt-output" class="speech-prompt">Which Xiren sketch would you recommend to a foreign friend, and why?</p>
         </aside>

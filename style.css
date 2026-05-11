@@ -237,6 +237,12 @@ pre{white-space:pre-wrap;color:#ddd;margin:0}
 .phone-preview{border:1px solid rgba(255,143,179,.24);border-radius:32px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));box-shadow:0 22px 70px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.04)}
 .phone-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:#fff}.phone-top span{width:42px;height:6px;border-radius:999px;background:rgba(255,255,255,.28)}.phone-top b{flex:1}.phone-top em{font-style:normal;color:#ff8fb3;font-size:12px}
 .voice-bar{margin-top:12px;border-radius:18px;background:rgba(255,143,179,.14);border:1px solid rgba(255,143,179,.28);padding:12px;display:flex;justify-content:space-between;color:#d9fff0}
+
+.voice-picker-card{align-items:center;gap:10px;flex-wrap:wrap}
+.voice-picker-card label,.voice-control-row label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#ffcee0}
+.voice-picker-card select,.voice-control-row select{min-width:190px;flex:1;border:1px solid rgba(255,143,179,.42);border-radius:10px;background:rgba(5,7,10,.82);color:#fff;padding:8px 10px}
+.voice-picker-card strong{font-size:12px;color:#d9fff0}
+.voice-control-row{display:grid;gap:6px;margin:0 0 12px}
 .metric-row{margin-top:0}.stat-card span{color:#ff8fb3;font-size:13px;font-weight:800}.stat-card strong{display:block;font-size:34px;margin:6px 0}.stat-card p{color:var(--muted);margin:0}
 .app-section{scroll-margin-top:92px}.section-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px}.section-head h2{margin:0 0 8px;font-size:24px}.topic-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.mini-btn.selected{background:rgba(255,143,179,.18);border-color:rgba(255,143,179,.7);color:#d9fff0}
 .chat-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px}.chat-window{min-height:360px;border:1px solid rgba(212,175,55,.18);border-radius:20px;padding:16px;background:rgba(4,7,6,.36);display:flex;flex-direction:column;gap:12px}.compact-chat{min-height:360px}.chat-bubble{max-width:78%;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:12px;background:rgba(255,255,255,.07)}.chat-bubble.right{align-self:flex-end;background:rgba(255,143,179,.12);border-color:rgba(255,143,179,.22)}.chat-bubble b{display:block;color:#ff8fb3;margin-bottom:6px}.chat-bubble p{margin:0 0 6px;line-height:1.5}.chat-bubble small{color:var(--muted)}

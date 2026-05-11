@@ -247,6 +247,117 @@ const improvPrompts = [
   "Ask me a follow-up question about my favorite comedy team."
 ];
 
+const voiceStorageKey = "xiren.selectedEnglishVoice";
+
+function getSavedVoiceURI() {
+  try {
+    return localStorage.getItem(voiceStorageKey) || "";
+  } catch (error) {
+    return "";
+  }
+}
+
+function saveVoiceURI(uri) {
+  try {
+    if (uri) localStorage.setItem(voiceStorageKey, uri);
+    else localStorage.removeItem(voiceStorageKey);
+  } catch (error) {
+    console.warn("Voice preference could not be saved.", error);
+  }
+}
+
+const voiceState = { englishVoices: [], selectedURI: getSavedVoiceURI() };
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"]/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;"
+  })[char]);
+}
+
+function voiceLabel(voice) {
+  const localTag = voice.localService ? "system" : "network";
+  return `${voice.name} · ${voice.lang} · ${localTag}`;
+}
+
+function getEnglishVoices() {
+  if (!("speechSynthesis" in window)) return [];
+  return window.speechSynthesis
+    .getVoices()
+    .filter((voice) => /^en([_-]|$)/i.test(voice.lang))
+    .sort((a, b) => {
+      const aUS = a.lang.toLowerCase() === "en-us" ? 0 : 1;
+      const bUS = b.lang.toLowerCase() === "en-us" ? 0 : 1;
+      return aUS - bUS || a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name);
+    });
+}
+
+function findVoice(uri) {
+  return voiceState.englishVoices.find((voice) => voice.voiceURI === uri);
+}
+
+function getDefaultEnglishVoice() {
+  return voiceState.englishVoices.find((voice) => voice.lang.toLowerCase() === "en-us") || null;
+}
+
+function getActiveVoice() {
+  return findVoice(voiceState.selectedURI) || getDefaultEnglishVoice();
+}
+
+function updateVoiceStatus() {
+  document.querySelectorAll("[data-voice-status]").forEach((status) => {
+    const selectedVoice = findVoice(voiceState.selectedURI);
+    const fallbackVoice = getDefaultEnglishVoice();
+    if (selectedVoice) {
+      status.textContent = `Saved: ${selectedVoice.name}`;
+    } else if (fallbackVoice) {
+      status.textContent = `Default: ${fallbackVoice.name} (${fallbackVoice.lang})`;
+    } else {
+      status.textContent = "Default: en-US";
+    }
+  });
+}
+
+function renderVoicePickers() {
+  const pickers = document.querySelectorAll("[data-voice-picker]");
+  if (!pickers.length) return;
+
+  voiceState.englishVoices = getEnglishVoices();
+  if (voiceState.selectedURI && !findVoice(voiceState.selectedURI)) {
+    voiceState.selectedURI = "";
+    saveVoiceURI("");
+  }
+
+  const defaultVoice = getDefaultEnglishVoice();
+  const options = [
+    `<option value="">Default en-US${defaultVoice ? ` · ${defaultVoice.name}` : ""}</option>`,
+    ...voiceState.englishVoices.map((voice) => `<option value="${escapeHtml(voice.voiceURI)}">${escapeHtml(voiceLabel(voice))}</option>`)
+  ];
+
+  pickers.forEach((picker) => {
+    picker.innerHTML = voiceState.englishVoices.length
+      ? options.join("")
+      : '<option value="">No English voices found yet</option>';
+    picker.value = voiceState.selectedURI;
+    picker.disabled = !voiceState.englishVoices.length;
+    picker.onchange = () => {
+      voiceState.selectedURI = picker.value;
+      saveVoiceURI(voiceState.selectedURI);
+      renderVoicePickers();
+    };
+  });
+  updateVoiceStatus();
+}
+
+function initVoicePicker() {
+  renderVoicePickers();
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.onvoiceschanged = renderVoicePickers;
+  }
+}
+
 function renderChat(topic) {
   const chatHosts = [document.getElementById("hero-chat"), document.getElementById("main-chat")].filter(Boolean);
   chatHosts.forEach((host) => {
@@ -267,12 +378,16 @@ function speakText(text) {
   if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
+  const activeVoice = getActiveVoice();
+  utterance.lang = activeVoice?.lang || "en-US";
+  utterance.voice = activeVoice;
   utterance.rate = 0.92;
   window.speechSynthesis.speak(utterance);
 }
 
 function renderXirenHome() {
+  initVoicePicker();
+
   const tabs = document.getElementById("topic-tabs");
   if (tabs) {
     tabs.innerHTML = xirenTopics.map((topic, index) => `<button class="mini-btn ${index === 0 ? "selected" : ""}" data-topic="${topic.id}">${topic.label}</button>`).join("");

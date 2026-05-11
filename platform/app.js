@@ -13,7 +13,7 @@ const pages = [
 ];
 
 const dataFiles = ["projects", "novels", "scripts", "shots", "characters", "scenes", "storyboards", "reviews", "costs"];
-const state = { reviews: [], jsonStatus: "成功", fxStatus: "粒子水墨背景 / 鼠标粒子跟随已启用" };
+const state = { reviews: [], jsonStatus: "成功", fxStatus: "循环未来感光照粒子 / 工业网格 / 纵深太空层已启用" };
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const isDesktop = window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches;
 
@@ -35,6 +35,20 @@ function rowHtml(obj, cols) {
 }
 
 function addRevealTargets() {
+  const current = location.pathname.split("/").pop() || "index.html";
+  const pageKey = current.replace(/\.html$/, "") || "index";
+  document.body.classList.add(`page-fx-${pageKey}`);
+
+  const sections = document.querySelectorAll("main > section, .version-banner");
+  sections.forEach((section, i) => {
+    section.classList.add("section-fx", `section-fx-${(i % 4) + 1}`);
+  });
+
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((card, i) => {
+    card.classList.add(`card-fx-${(i % 6) + 1}`);
+  });
+
   if (prefersReducedMotion) return;
   const targets = document.querySelectorAll(".version-banner, .page-title, .page-subtitle, .card, .table-wrap, table");
   targets.forEach((el, i) => el.classList.add("reveal", `delay-${Math.min(i % 5, 4)}`));
@@ -70,6 +84,8 @@ function initParticleEffects() {
   ];
   const inkBlots = [];
   const starParticles = [];
+  const depthParticles = [];
+  const beamParticles = [];
   const cursorParticles = [];
   const burstParticles = [];
   const pointer = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.35, active: false };
@@ -91,8 +107,12 @@ function initParticleEffects() {
   const buildBackgroundParticles = () => {
     inkBlots.length = 0;
     starParticles.length = 0;
-    const blotCount = Math.min(42, Math.max(18, Math.floor(width / 42))) * motionScale;
-    const sparkleCount = Math.min(96, Math.max(32, Math.floor((width * height) / 22000))) * motionScale;
+    depthParticles.length = 0;
+    beamParticles.length = 0;
+    const blotCount = Math.min(54, Math.max(24, Math.floor(width / 34))) * motionScale;
+    const sparkleCount = Math.min(180, Math.max(56, Math.floor((width * height) / 14500))) * motionScale;
+    const depthCount = Math.min(150, Math.max(48, Math.floor((width * height) / 17000))) * motionScale;
+    const beamCount = Math.min(34, Math.max(12, Math.floor(width / 58))) * motionScale;
     for (let i = 0; i < Math.ceil(blotCount); i += 1) {
       inkBlots.push({
         x: Math.random() * width,
@@ -101,7 +121,7 @@ function initParticleEffects() {
         vx: (Math.random() - 0.5) * 0.28 * motionScale,
         vy: (Math.random() - 0.5) * 0.22 * motionScale,
         hue: palette[i % palette.length],
-        alpha: (0.055 + Math.random() * 0.12) * (prefersReducedMotion ? 0.78 : 1),
+        alpha: (0.075 + Math.random() * 0.16) * (prefersReducedMotion ? 0.78 : 1),
         phase: Math.random() * Math.PI * 2
       });
     }
@@ -109,11 +129,37 @@ function initParticleEffects() {
       starParticles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        r: 0.9 + Math.random() * 2.8,
-        vx: (Math.random() - 0.5) * 0.18 * motionScale,
-        vy: (Math.random() - 0.5) * 0.16 * motionScale,
+        r: 0.9 + Math.random() * 3.8,
+        vx: (Math.random() - 0.5) * 0.28 * motionScale,
+        vy: (Math.random() - 0.5) * 0.24 * motionScale,
         hue: palette[Math.floor(Math.random() * palette.length)],
-        alpha: 0.18 + Math.random() * 0.42,
+        alpha: 0.22 + Math.random() * 0.54,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+    for (let i = 0; i < Math.ceil(depthCount); i += 1) {
+      const z = 0.18 + Math.random() * 1.2;
+      depthParticles.push({
+        x: (Math.random() - 0.5) * width * 1.6,
+        y: (Math.random() - 0.5) * height * 1.4,
+        z,
+        speed: (0.0014 + Math.random() * 0.0042) * motionScale,
+        r: 0.7 + Math.random() * 2.6,
+        hue: palette[Math.floor(Math.random() * palette.length)],
+        alpha: 0.2 + Math.random() * 0.58,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+    for (let i = 0; i < Math.ceil(beamCount); i += 1) {
+      beamParticles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        len: 70 + Math.random() * 230,
+        vx: (0.38 + Math.random() * 1.15) * motionScale,
+        vy: (Math.random() - 0.5) * 0.38 * motionScale,
+        angle: -0.18 + Math.random() * 0.44,
+        hue: palette[Math.floor(Math.random() * palette.length)],
+        alpha: 0.05 + Math.random() * 0.16,
         phase: Math.random() * Math.PI * 2
       });
     }
@@ -215,6 +261,58 @@ function initParticleEffects() {
       const wobble = prefersReducedMotion ? 0 : Math.sin(time * 0.0007 + i) * 13;
       bg.ellipse(b.x, b.y, r * (0.84 + (i % 3) * 0.08), r * (0.48 + (i % 4) * 0.06), b.phase + wobble * 0.01, 0, Math.PI * 2);
       bg.fill();
+    });
+
+    depthParticles.forEach((p) => {
+      p.z += p.speed;
+      if (p.z > 1.65) {
+        p.z = 0.18;
+        p.x = (Math.random() - 0.5) * width * 1.6;
+        p.y = (Math.random() - 0.5) * height * 1.4;
+      }
+      const cx = width * 0.52;
+      const cy = height * 0.48;
+      const sx = cx + p.x * p.z;
+      const sy = cy + p.y * p.z;
+      const shimmer = prefersReducedMotion ? 0.72 : Math.sin(time * 0.0018 + p.phase) * 0.28 + 0.82;
+      bg.fillStyle = `${p.hue}${Math.min(0.9, p.alpha * p.z * shimmer)})`;
+      bg.beginPath();
+      bg.arc(sx, sy, p.r * (0.55 + p.z * 1.7), 0, Math.PI * 2);
+      bg.fill();
+      if (!prefersReducedMotion && p.z > 0.7) {
+        bg.strokeStyle = `${p.hue}${0.08 * p.z})`;
+        bg.lineWidth = Math.min(2.2, p.z * 1.1);
+        bg.beginPath();
+        bg.moveTo(sx, sy);
+        bg.lineTo(sx - p.x * 0.018 * p.z, sy - p.y * 0.018 * p.z);
+        bg.stroke();
+      }
+    });
+
+    beamParticles.forEach((b) => {
+      b.x += b.vx;
+      b.y += b.vy + Math.sin(time * 0.001 + b.phase) * 0.08;
+      if (b.x > width + b.len) {
+        b.x = -b.len;
+        b.y = Math.random() * height;
+      }
+      if (b.y < -80) b.y = height + 80;
+      if (b.y > height + 80) b.y = -80;
+      const pulse = prefersReducedMotion ? 0.72 : Math.sin(time * 0.002 + b.phase) * 0.32 + 0.78;
+      bg.save();
+      bg.translate(b.x, b.y);
+      bg.rotate(b.angle);
+      const beam = bg.createLinearGradient(-b.len * 0.5, 0, b.len * 0.5, 0);
+      beam.addColorStop(0, `${b.hue}0)`);
+      beam.addColorStop(0.5, `${b.hue}${b.alpha * pulse})`);
+      beam.addColorStop(1, `${b.hue}0)`);
+      bg.strokeStyle = beam;
+      bg.lineWidth = 1.2 + pulse * 2.8;
+      bg.beginPath();
+      bg.moveTo(-b.len * 0.5, 0);
+      bg.lineTo(b.len * 0.5, 0);
+      bg.stroke();
+      bg.restore();
     });
 
     starParticles.forEach((p) => {

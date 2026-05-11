@@ -41,19 +41,26 @@ function addRevealTargets() {
 }
 
 function initParticleEffects() {
-  if (prefersReducedMotion) return;
+  if (document.querySelector(".fx-ink-bg")) return;
 
+  const motionScale = prefersReducedMotion ? 0.42 : 1;
   const bgCanvas = document.createElement("canvas");
   const trailCanvas = document.createElement("canvas");
   bgCanvas.className = "fx-canvas fx-ink-bg";
   trailCanvas.className = "fx-canvas fx-cursor-trail";
   bgCanvas.setAttribute("aria-hidden", "true");
   trailCanvas.setAttribute("aria-hidden", "true");
+  document.body.classList.add("particle-fx-ready");
   document.body.prepend(trailCanvas);
   document.body.prepend(bgCanvas);
 
   const bg = bgCanvas.getContext("2d");
   const trail = trailCanvas.getContext("2d");
+  if (!bg || !trail) {
+    state.fxStatus = "粒子画布初始化失败";
+    return;
+  }
+
   const palette = [
     "rgba(212,175,55,",
     "rgba(104,223,255,",
@@ -62,11 +69,15 @@ function initParticleEffects() {
     "rgba(110,255,191,"
   ];
   const inkBlots = [];
+  const starParticles = [];
   const cursorParticles = [];
+  const burstParticles = [];
   const pointer = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.35, active: false };
   let width = 0;
   let height = 0;
   let dpr = 1;
+  let lastTrailTime = 0;
+  let frameSkip = false;
 
   const setCanvasSize = (canvas) => {
     canvas.width = Math.floor(width * dpr);
@@ -77,43 +88,81 @@ function initParticleEffects() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
 
+  const buildBackgroundParticles = () => {
+    inkBlots.length = 0;
+    starParticles.length = 0;
+    const blotCount = Math.min(42, Math.max(18, Math.floor(width / 42))) * motionScale;
+    const sparkleCount = Math.min(96, Math.max(32, Math.floor((width * height) / 22000))) * motionScale;
+    for (let i = 0; i < Math.ceil(blotCount); i += 1) {
+      inkBlots.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: 90 + Math.random() * 250,
+        vx: (Math.random() - 0.5) * 0.28 * motionScale,
+        vy: (Math.random() - 0.5) * 0.22 * motionScale,
+        hue: palette[i % palette.length],
+        alpha: (0.055 + Math.random() * 0.12) * (prefersReducedMotion ? 0.78 : 1),
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+    for (let i = 0; i < Math.ceil(sparkleCount); i += 1) {
+      starParticles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: 0.9 + Math.random() * 2.8,
+        vx: (Math.random() - 0.5) * 0.18 * motionScale,
+        vy: (Math.random() - 0.5) * 0.16 * motionScale,
+        hue: palette[Math.floor(Math.random() * palette.length)],
+        alpha: 0.18 + Math.random() * 0.42,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  };
+
   const resize = () => {
     width = window.innerWidth;
     height = window.innerHeight;
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     setCanvasSize(bgCanvas);
     setCanvasSize(trailCanvas);
-    inkBlots.length = 0;
-    const count = Math.min(34, Math.max(18, Math.floor(width / 54)));
-    for (let i = 0; i < count; i += 1) {
-      inkBlots.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: 70 + Math.random() * 210,
-        vx: (Math.random() - 0.5) * 0.22,
-        vy: (Math.random() - 0.5) * 0.18,
-        hue: palette[i % palette.length],
-        alpha: 0.035 + Math.random() * 0.075,
-        phase: Math.random() * Math.PI * 2
-      });
-    }
+    buildBackgroundParticles();
   };
 
-  const spawnCursorParticles = (x, y, amount = 3) => {
+  const spawnCursorParticles = (x, y, amount = 4) => {
     if (!isDesktop) return;
-    for (let i = 0; i < amount; i += 1) {
+    const scaledAmount = Math.max(1, Math.round(amount * motionScale));
+    for (let i = 0; i < scaledAmount; i += 1) {
       cursorParticles.push({
         x,
         y,
-        vx: (Math.random() - 0.5) * 1.7,
-        vy: (Math.random() - 0.5) * 1.7,
-        r: 2 + Math.random() * 5,
+        vx: (Math.random() - 0.5) * 2.3,
+        vy: (Math.random() - 0.5) * 2.3,
+        r: 2.4 + Math.random() * 6.2,
         life: 1,
-        decay: 0.014 + Math.random() * 0.016,
+        decay: (0.012 + Math.random() * 0.014) / Math.max(motionScale, 0.35),
         hue: palette[Math.floor(Math.random() * palette.length)]
       });
     }
-    if (cursorParticles.length > 180) cursorParticles.splice(0, cursorParticles.length - 180);
+    if (cursorParticles.length > 220) cursorParticles.splice(0, cursorParticles.length - 220);
+  };
+
+  const spawnBurst = (x, y, amount = 34) => {
+    const scaledAmount = Math.max(12, Math.round(amount * motionScale));
+    for (let i = 0; i < scaledAmount; i += 1) {
+      const angle = (Math.PI * 2 * i) / scaledAmount + Math.random() * 0.28;
+      const speed = (1.1 + Math.random() * 4.2) * motionScale;
+      burstParticles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        r: 2.2 + Math.random() * 7.5,
+        life: 1,
+        decay: 0.016 + Math.random() * 0.018,
+        hue: palette[Math.floor(Math.random() * palette.length)]
+      });
+    }
+    if (burstParticles.length > 260) burstParticles.splice(0, burstParticles.length - 260);
   };
 
   window.addEventListener("resize", resize, { passive: true });
@@ -121,13 +170,31 @@ function initParticleEffects() {
     pointer.x = e.clientX;
     pointer.y = e.clientY;
     pointer.active = true;
-    spawnCursorParticles(pointer.x, pointer.y, 4);
+    if (isDesktop && performance.now() - lastTrailTime > (prefersReducedMotion ? 70 : 18)) {
+      spawnCursorParticles(pointer.x, pointer.y, 5);
+      lastTrailTime = performance.now();
+    }
+  }, { passive: true });
+  window.addEventListener("pointerdown", (e) => {
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.active = true;
+    spawnBurst(pointer.x, pointer.y, isDesktop ? 42 : 28);
   }, { passive: true });
   window.addEventListener("pointerleave", () => { pointer.active = false; }, { passive: true });
 
   resize();
+  spawnBurst(width * 0.52, Math.max(120, height * 0.32), 28);
 
   const render = (time = 0) => {
+    if (prefersReducedMotion) {
+      frameSkip = !frameSkip;
+      if (frameSkip) {
+        requestAnimationFrame(render);
+        return;
+      }
+    }
+
     bg.clearRect(0, 0, width, height);
     bg.globalCompositeOperation = "lighter";
     inkBlots.forEach((b, i) => {
@@ -137,50 +204,69 @@ function initParticleEffects() {
       if (b.x > width + b.r) b.x = -b.r;
       if (b.y < -b.r) b.y = height + b.r;
       if (b.y > height + b.r) b.y = -b.r;
-      const pulse = Math.sin(time * 0.00045 + b.phase) * 0.18 + 1;
+      const pulse = (prefersReducedMotion ? 1 : Math.sin(time * 0.00045 + b.phase) * 0.2 + 1);
       const r = b.r * pulse;
       const gradient = bg.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
       gradient.addColorStop(0, `${b.hue}${b.alpha})`);
-      gradient.addColorStop(0.42, `${b.hue}${b.alpha * 0.42})`);
+      gradient.addColorStop(0.44, `${b.hue}${b.alpha * 0.45})`);
       gradient.addColorStop(1, `${b.hue}0)`);
       bg.fillStyle = gradient;
       bg.beginPath();
-      const wobble = Math.sin(time * 0.0007 + i) * 12;
-      bg.ellipse(b.x, b.y, r * (0.82 + (i % 3) * 0.08), r * (0.45 + (i % 4) * 0.06), b.phase + wobble * 0.01, 0, Math.PI * 2);
+      const wobble = prefersReducedMotion ? 0 : Math.sin(time * 0.0007 + i) * 13;
+      bg.ellipse(b.x, b.y, r * (0.84 + (i % 3) * 0.08), r * (0.48 + (i % 4) * 0.06), b.phase + wobble * 0.01, 0, Math.PI * 2);
+      bg.fill();
+    });
+
+    starParticles.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = width;
+      if (p.x > width) p.x = 0;
+      if (p.y < 0) p.y = height;
+      if (p.y > height) p.y = 0;
+      const shimmer = prefersReducedMotion ? 0.75 : Math.sin(time * 0.002 + p.phase) * 0.35 + 0.75;
+      bg.fillStyle = `${p.hue}${p.alpha * shimmer})`;
+      bg.beginPath();
+      bg.arc(p.x, p.y, p.r * shimmer, 0, Math.PI * 2);
       bg.fill();
     });
 
     if (pointer.active && isDesktop) {
-      const glow = bg.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 170);
-      glow.addColorStop(0, "rgba(255,239,182,.16)");
-      glow.addColorStop(0.55, "rgba(181,92,255,.06)");
+      const glow = bg.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 190);
+      glow.addColorStop(0, "rgba(255,239,182,.24)");
+      glow.addColorStop(0.5, "rgba(104,223,255,.1)");
       glow.addColorStop(1, "rgba(181,92,255,0)");
       bg.fillStyle = glow;
       bg.beginPath();
-      bg.arc(pointer.x, pointer.y, 170, 0, Math.PI * 2);
+      bg.arc(pointer.x, pointer.y, 190, 0, Math.PI * 2);
       bg.fill();
     }
 
     trail.clearRect(0, 0, width, height);
     trail.globalCompositeOperation = "lighter";
-    for (let i = cursorParticles.length - 1; i >= 0; i -= 1) {
-      const p = cursorParticles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy -= 0.006;
-      p.life -= p.decay;
-      if (p.life <= 0) {
-        cursorParticles.splice(i, 1);
-        continue;
+    const renderGlowParticles = (particles) => {
+      for (let i = particles.length - 1; i >= 0; i -= 1) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.012 * motionScale;
+        p.life -= p.decay;
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        const gradient = trail.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 8);
+        gradient.addColorStop(0, `${p.hue}${0.44 * p.life})`);
+        gradient.addColorStop(0.42, `${p.hue}${0.14 * p.life})`);
+        gradient.addColorStop(1, `${p.hue}0)`);
+        trail.fillStyle = gradient;
+        trail.beginPath();
+        trail.arc(p.x, p.y, p.r * (1 + (1 - p.life) * 2.6), 0, Math.PI * 2);
+        trail.fill();
       }
-      const gradient = trail.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 7);
-      gradient.addColorStop(0, `${p.hue}${0.32 * p.life})`);
-      gradient.addColorStop(1, `${p.hue}0)`);
-      trail.fillStyle = gradient;
-      trail.beginPath();
-      trail.arc(p.x, p.y, p.r * (1 + (1 - p.life) * 2.3), 0, Math.PI * 2);
-      trail.fill();
-    }
+    };
+    renderGlowParticles(cursorParticles);
+    renderGlowParticles(burstParticles);
 
     requestAnimationFrame(render);
   };

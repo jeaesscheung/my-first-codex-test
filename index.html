@@ -1,1 +1,96 @@
-<!DOCTYPE html><html lang='zh-CN'><head><meta charset='UTF-8'/><meta name='viewport' content='width=device-width, initial-scale=1.0'/><title>金泰 AI 影视制片中台 - 首页</title><link rel='stylesheet' href='./style.css'/></head><body><div id='top-nav'></div><main class='main'><div class='version-banner'>v0.3 FANCY 视觉动效版｜毛玻璃｜鼠标光晕｜黑金动态背景</div><h1 class='page-title'>首页仪表盘</h1><p class='page-subtitle'>首页指标已改为自动读取 ./data/*.json。</p><section class='grid cards-4'><article class='card'><h3>数据总条目</h3><div id='total-items' class='metric'>-</div></article><article class='card'><h3>数据集数量</h3><div id='dataset-count' class='metric'>-</div></article><article class='card'><h3>项目数</h3><div id='project-count' class='metric'>-</div></article><article class='card'><h3>导演审核条目</h3><div id='review-count' class='metric'>-</div></article></section><section class='card'><h3>系统状态</h3><ul id='system-status'><li>页面主体：已显示</li><li>CSS：已加载</li><li>JS：初始化中</li><li>JSON：检测中</li><li>动效层：已启用</li></ul></section><section class='card'><h3>数据文件统计</h3><div class='table-wrap'><table><thead><tr><th>JSON 文件</th><th>记录数</th></tr></thead><tbody id='home-summary'></tbody></table></div></section></main><script src='./app.js'></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>喜人梗聊 Digital Human - 英语口语热点陪练</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body class="xiren-app">
+  <div id="top-nav"></div>
+  <main class="main app-shell">
+    <section class="hero app-hero">
+      <div class="hero-copy">
+        <div class="version-banner">v2.0 喜人梗聊 Digital Human｜喜人奇妙夜｜小品梗翻译｜热点英语瞎聊天</div>
+        <p class="eyebrow">Your sketch-comedy English buddy</p>
+        <h1 class="page-title">我是懂《喜人奇妙夜》的数字人，陪你把热梗聊成英语口语</h1>
+        <p class="page-subtitle">围绕喜人小队、流量嘉宾、爆笑小品和网络热梗，把“哈哈哈”拆成能开口的英文闲聊：先听梗、再接梗、最后用自己的话复述观点。</p>
+        <div class="hero-actions" aria-label="核心操作">
+          <a class="primary-cta" href="#group-chat">进入喜人群聊</a>
+          <a class="secondary-cta" href="#speaking-lab">练梗式口语</a>
+        </div>
+      </div>
+      <aside class="phone-preview" aria-label="喜人数字人群聊预览">
+        <div class="phone-top"><span></span><b>喜人热梗聊天室</b><em>Hot</em></div>
+        <div id="hero-chat" class="chat-window compact-chat"></div>
+        <div class="voice-bar"><span>Tap a line to shadow</span><strong>🎭 English mode</strong></div>
+      </aside>
+    </section>
+
+    <section class="grid cards-4 metric-row" aria-label="产品能力">
+      <article class="card stat-card"><span>节目知识</span><strong>2季+</strong><p>覆盖公开信息中的喜人赛制、嘉宾和代表作品。</p></article>
+      <article class="card stat-card"><span>梗聊角色</span><strong>6</strong><p>数字人、考古粉、路人嘴替、翻译官一起陪聊。</p></article>
+      <article class="card stat-card"><span>口语模式</span><strong>4</strong><p>影子跟读、观点复述、reaction、即兴吐槽。</p></article>
+      <article class="card stat-card"><span>热点节奏</span><strong>Daily</strong><p>用“今天刷到什么”驱动口语话题更新。</p></article>
+    </section>
+
+    <section id="group-chat" class="card app-section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Xiren group chat</p>
+          <h2>喜人奇妙夜梗聊页</h2>
+          <p class="muted">选择一个节目/热梗话题，数字人会用中英混合方式把小品笑点转成 casual English，让你像在群聊里自然接话。</p>
+        </div>
+        <div id="topic-tabs" class="topic-tabs" aria-label="喜人话题切换"></div>
+      </div>
+      <div class="chat-layout">
+        <div id="main-chat" class="chat-window"></div>
+        <aside class="prompt-panel">
+          <h3>你的口语任务</h3>
+          <ol id="mission-list"></ol>
+          <button id="random-prompt" class="mini-btn">换一个热点追问</button>
+          <p id="prompt-output" class="speech-prompt">Which Xiren sketch would you recommend to a foreign friend, and why?</p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="characters" class="app-section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Digital personas</p>
+          <h2>喜人梗聊数字人角色</h2>
+          <p class="muted">每个角色负责一种聊天语气：懂节目、会翻译、能接梗、敢吐槽，让英语输出更像真实社交。</p>
+        </div>
+      </div>
+      <div id="xiren-characters" class="grid cards-4 role-grid"></div>
+    </section>
+
+    <section id="speaking-lab" class="card app-section speaking-lab">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Meme-to-English lab</p>
+          <h2>小品梗英语口语训练台</h2>
+          <p class="muted">不照搬台词，只把笑点结构改写成日常英语表达；浏览器支持时可播放英文示例并跟读。</p>
+        </div>
+      </div>
+      <div id="drill-list" class="drill-list"></div>
+    </section>
+
+    <section id="hot-radar" class="grid cards-3 app-section">
+      <article class="card feature-card">
+        <h3>节目考古 + 新梗追踪</h3>
+        <p>围绕腾讯视频、米未出品的《喜人奇妙夜》系列，整理公开资料中的小队、嘉宾、作品和讨论点。</p>
+      </article>
+      <article class="card feature-card">
+        <h3>热梗不硬翻</h3>
+        <p>把“抽象”“反转”“嘴替”“群像魅力”等中文互联网语感，改写成外国朋友也能听懂的表达。</p>
+      </article>
+      <article class="card feature-card">
+        <h3>像聊天一样练口语</h3>
+        <p>每轮都用 one-liner、reaction、follow-up question 逼自己开口，不再只背单词。</p>
+      </article>
+    </section>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>

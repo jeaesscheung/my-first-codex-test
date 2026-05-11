@@ -1,0 +1,6 @@
+[
+ {"item":"镜头生成","budget":"¥120,000","actual":"¥138,000","reworkRate":"42%","risk":"中"},
+ {"item":"角色资产重绘","budget":"¥60,000","actual":"¥66,000","reworkRate":"28%","risk":"低"},
+ {"item":"场景资产修订","budget":"¥80,000","actual":"¥109,000","reworkRate":"55%","risk":"高"},
+ {"item":"分镜再审","budget":"¥40,000","actual":"¥51,000","reworkRate":"37%","risk":"中"}
+]

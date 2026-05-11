@@ -1,4 +1,4 @@
-name: Deploy English App to GitHub Pages
+name: Deploy Dual Project Portal to GitHub Pages
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload English app files
+      - name: Upload portal, English app, and platform files
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'

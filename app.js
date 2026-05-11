@@ -1,9 +1,9 @@
 const pages = [
-  ["index.html", "MoneyTalk 首页"],
-  ["#group-chat", "角色群聊"],
-  ["#characters", "角色梗库"],
-  ["#speaking-lab", "听说训练"],
-  ["cost.html", "成本统计"],
+  ["index.html", "喜人梗聊"],
+  ["#group-chat", "喜人群聊"],
+  ["#characters", "数字人角色"],
+  ["#speaking-lab", "梗式口语"],
+  ["#hot-radar", "热点雷达"],
   ["docs.html", "制作规范"]
 ];
 
@@ -16,7 +16,7 @@ function renderNav() {
   const host = document.getElementById("top-nav");
   if (!host) return;
   const current = location.pathname.split("/").pop() || "index.html";
-  host.innerHTML = `<div class="top-nav"><div class="nav-wrap"><div class="brand">MoneyTalk Buddy</div><nav class="nav-links">${pages.map(([href, label]) => {
+  host.innerHTML = `<div class="top-nav"><div class="nav-wrap"><div class="brand">喜人梗聊 Digital Human</div><nav class="nav-links">${pages.map(([href, label]) => {
     const target = href.startsWith("#") ? (current === "index.html" ? href : `./index.html${href}`) : `./${href}`;
     const active = href === current || (href.startsWith("#") && current === "index.html");
     return `<a href="${target}" class="${active ? "active" : ""}">${label}</a>`;
@@ -177,61 +177,74 @@ async function renderCost() {
 }
 
 
-const moneyTopics = [
+const xirenTopics = [
   {
-    id: "salary",
-    label: "谈薪不怂",
-    mission: ["听懂 3 个关于 salary 的关键词", "用 I would like to... 提出一个诉求", "用一个轻松梗化解紧张"],
+    id: "show-brief",
+    label: "节目安利局",
+    mission: ["用 one sentence 介绍《喜人奇妙夜》", "说出你最喜欢 sketch comedy 的一个原因", "用 follow-up question 继续追问对方"],
     messages: [
-      ["老板马总", "If you want a raise, show me the value first. Money does not grow on office plants.", "老板端着保温杯：先别激动，先讲 ROI。"],
-      ["财迷小美", "I bring value, good vibes, and emergency snacks. Can we discuss a fair salary adjustment?", "把涨薪说得像报菜名，但很专业。"],
-      ["气氛组阿强", "My wallet is so thin, it has started doing yoga.", "钱包练瑜伽：主打一个轻盈。"]
+      ["喜人数字人", "Think of it as a sketch-comedy party where teams turn everyday anxiety into punchlines.", "先给外国朋友一句好懂的节目安利。"],
+      ["考古粉小麦", "It is not just random jokes; the best sketches build a tiny world and then break it beautifully.", "高级一点：不是乱搞笑，是先建世界再拆世界。"],
+      ["路人嘴替", "I came for the celebrities, but I stayed for the teams and their weird little universes.", "流量艺人负责拉我进门，喜人小队负责让我住下。"]
     ]
   },
   {
-    id: "budget",
-    label: "预算大作战",
-    mission: ["说出 needs 与 wants 的区别", "用 I can cut down on... 做预算", "给朋友一个不说教的建议"],
+    id: "season-two",
+    label: "第二季热聊",
+    mission: ["练习 recently / apparently / went viral", "把一个作品名转成英文介绍", "用 I love how... 表达审美"],
     messages: [
-      ["预算姐", "A budget is not a prison. It is a GPS for your money.", "预算不是牢笼，是导航。别把钱开进沟里。"],
-      ["月光小王", "I only bought one coffee. The other six were emotional support.", "咖啡：我不是消费，我是精神股东。"],
-      ["理财嘴替", "Try the 50-30-20 rule: needs, wants, and savings.", "规则很正经，执行靠气氛。"]
+      ["热点雷达", "Season two feels louder, faster, and more internet-native, with jokes designed to be clipped and shared.", "更像短视频时代的喜剧：一秒一个可传播点。"],
+      ["梗翻译官", "For a title like Skill Gobang, I would explain it as a silly strategy game that keeps escalating.", "作品名不用硬译，先讲清玩法和笑点结构。"],
+      ["弹幕代表", "I love how a sketch can look chaotic, but the timing is actually very precise.", "看似抽象，节奏很细。"]
     ]
   },
   {
-    id: "bargain",
-    label: "砍价王者",
-    mission: ["听懂 discount / final price", "礼貌提出 Can you do...?", "用一句幽默话收尾"],
+    id: "celebrity-talk",
+    label: "流量艺人reaction",
+    mission: ["用 star power / chemistry / reaction 描述嘉宾", "练习既夸艺人又回到作品本身", "提出一个不尴尬的追问"],
     messages: [
-      ["砍价王大爷", "Can you do twenty dollars? My budget is crying in English.", "预算已经哭出伦敦腔。"],
-      ["摊主 Lisa", "That is a bold offer, but I respect the confidence.", "砍得狠，但气质拿捏了。"],
-      ["围观阿强", "This negotiation has more drama than my group chat.", "这场面，比群聊退群还刺激。"]
+      ["吃瓜但礼貌", "A famous guest brings attention, but the sketch still has to earn the laugh.", "流量能开门，包袱要自己站住。"],
+      ["喜人数字人", "When observers like Ma Dong, Hu Xianxu, Li Dan, Zhang Ruoyun or Da Zhangwei react, their comments become part of the viewing fun.", "把观察员 reaction 也纳入聊天素材。"],
+      ["口语教练", "Try asking: What did their reaction add to the sketch for you?", "别只说 handsome / funny，追问具体贡献。"]
+    ]
+  },
+  {
+    id: "meme-remix",
+    label: "梗改英语",
+    mission: ["把抽象梗说成 absurd humor", "用 It gives me... 表达体感", "用一句英文接梗，不复述原台词"],
+    messages: [
+      ["抽象翻译机", "This gives me 'everyone is losing it, but somehow the logic still works' energy.", "中文的“抽象但合理”，可以这样聊。"],
+      ["小品拆解员", "The joke works because the characters treat a ridiculous situation like a serious emergency.", "喜剧常用公式：荒唐处境 + 一本正经。"],
+      ["路人嘴替", "My brain says no, but my laugh says replay it.", "适合刷到离谱片段时接一句。"]
     ]
   }
 ];
 
-const moneyCharacters = [
-  ["💼", "老板马总", "ROI 挂嘴边", "Show me the value first.", "负责制造谈薪压力，但会给用户结构化反馈。"],
-  ["🧧", "财迷小美", "省钱也要体面", "Every yuan needs a mission.", "擅长把预算说成生活美学。"],
-  ["🛒", "砍价王大爷", "不砍不舒服", "Can you make it friendlier?", "把 bargain 练成脱口秀。"],
-  ["🎤", "气氛组阿强", "钱包薄但嘴甜", "My wallet needs a vacation.", "用梗降低开口焦虑。"],
-  ["📈", "理财嘴替", "冷静但不扫兴", "Small habits compound.", "把投资、储蓄讲成人话。"],
-  ["☕", "月光小王", "冲动消费本人", "It was on sale, so I saved money... kind of.", "负责贡献反面教材和真实共鸣。"]
+const xirenCharacters = [
+  ["🎭", "喜人数字人", "全能陪聊", "Give me the sketch, and I will turn the joke into casual English.", "负责把节目、小队、笑点和热搜话题变成可开口的英语闲聊。"],
+  ["📼", "考古粉小麦", "懂前后文", "The callback is the real dessert.", "负责回顾旧作品、人物关系和观众记忆点。"],
+  ["🔥", "热点雷达", "紧跟平台讨论", "This is exactly why the clip went viral.", "负责把热搜、弹幕、短视频传播点变成话题问题。"],
+  ["🌍", "梗翻译官", "不硬翻", "Do not translate the words; translate the funny.", "负责把中文梗改写成外国朋友听得懂的表达。"],
+  ["💬", "路人嘴替", "真实reaction", "I did not expect to laugh, but here we are.", "负责提供自然、不端着的口语反应。"],
+  ["🎙️", "口语教练", "逼你多说一句", "Nice. Now add one reason and one example.", "负责把你的短回答扩展成完整交流。"]
 ];
 
 const speakingDrills = [
-  ["谈薪", "I would like to discuss a fair salary adjustment.", "我想聊聊合理的薪资调整。", "替换 fair salary adjustment 为 bonus / hourly rate。"],
-  ["预算", "I need to cut down on impulse spending this month.", "这个月我需要减少冲动消费。", "补一句 because... 说出你的原因。"],
-  ["AA", "Let's split the bill evenly, unless someone ordered lobster.", "我们平均分账吧，除非有人点了龙虾。", "用 unless 开一个玩笑。"],
-  ["砍价", "Could you give me a small discount if I pay today?", "如果我今天付款，能给我一点折扣吗？", "把 small 改成 student / cash / friendly。"]
+  ["安利节目", "It is a Chinese sketch-comedy show where teams turn social moods into hilarious scenes.", "这是一档中国小品/Sketch 喜剧节目，小队把社会情绪变成好笑场景。", "替换 social moods：work stress / family pressure / internet culture。"],
+  ["评价小品", "The setup is absurd, but the emotions are surprisingly real.", "设定很荒诞，但情绪意外真实。", "补一句具体例子：for example..."],
+  ["聊嘉宾", "The celebrity reactions make the show easier to enter, but the performers carry the sketch.", "明星反应让节目更好入坑，但真正撑住小品的是演员。", "用 however / while 做平衡表达。"],
+  ["解释热梗", "It went viral because the line is short, repeatable, and weirdly accurate.", "它火是因为短、好复读，而且离谱地准确。", "把 line 改成 facial expression / twist / character。"],
+  ["接抽象梗", "I do not fully understand it, but I fully support the chaos.", "我不一定完全懂，但我完全支持这个混乱。", "适合接抽象片段，语气轻松。"],
+  ["表达偏爱", "I prefer sketches with strong characters, quick reversals, and a tiny bit of madness.", "我更喜欢人物强、反转快、还有一点疯的小品。", "说出你自己的三项偏好。"]
 ];
 
 const improvPrompts = [
-  "Your friend wants to borrow money again. What would you say politely?",
-  "You found a great deal, but you do not need it. Talk yourself out of it.",
-  "Ask your boss for a raise in one confident sentence.",
-  "Explain your monthly budget like you are hosting a comedy show.",
-  "Convince the group to choose a cheaper restaurant without sounding cheap."
+  "Recommend one Xiren sketch to a foreign friend in 20 seconds.",
+  "Explain why a chaotic meme can still be smart comedy.",
+  "Compare celebrity traffic with performer chemistry in one balanced opinion.",
+  "Turn a Chinese internet buzzword like 'abstract' into natural English.",
+  "React to a sketch ending that shocked you, but do it in casual English.",
+  "Ask me a follow-up question about my favorite comedy team."
 ];
 
 function renderChat(topic) {
@@ -240,6 +253,7 @@ function renderChat(topic) {
     host.innerHTML = topic.messages.map(([name, english, joke], index) => `
       <article class="chat-bubble ${index % 2 ? "right" : "left"}">
         <b>${name}</b>
+        <button class="line-play speak-btn" data-say="${english}" aria-label="播放这句英文">▶</button>
         <p>${english}</p>
         <small>${joke}</small>
       </article>
@@ -258,27 +272,27 @@ function speakText(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-function renderMoneyTalkHome() {
+function renderXirenHome() {
   const tabs = document.getElementById("topic-tabs");
   if (tabs) {
-    tabs.innerHTML = moneyTopics.map((topic, index) => `<button class="mini-btn ${index === 0 ? "selected" : ""}" data-topic="${topic.id}">${topic.label}</button>`).join("");
+    tabs.innerHTML = xirenTopics.map((topic, index) => `<button class="mini-btn ${index === 0 ? "selected" : ""}" data-topic="${topic.id}">${topic.label}</button>`).join("");
     tabs.onclick = (event) => {
       const btn = event.target.closest("button[data-topic]");
       if (!btn) return;
       tabs.querySelectorAll("button").forEach((one) => one.classList.remove("selected"));
       btn.classList.add("selected");
-      renderChat(moneyTopics.find((topic) => topic.id === btn.dataset.topic) || moneyTopics[0]);
+      renderChat(xirenTopics.find((topic) => topic.id === btn.dataset.topic) || xirenTopics[0]);
     };
   }
-  renderChat(moneyTopics[0]);
+  renderChat(xirenTopics[0]);
 
-  const characters = document.getElementById("money-characters");
+  const characters = document.getElementById("xiren-characters");
   if (characters) {
-    characters.innerHTML = moneyCharacters.map(([emoji, name, hook, line, note]) => `
+    characters.innerHTML = xirenCharacters.map(([emoji, name, hook, line, note]) => `
       <article class="card role-card">
         <div class="role-emoji">${emoji}</div>
         <h3>${name}</h3>
-        <p><b>梗点：</b>${hook}</p>
+        <p><b>人设：</b>${hook}</p>
         <p class="quote">“${line}”</p>
         <p class="muted">${note}</p>
         <button class="mini-btn speak-btn" data-say="${line}">听一句</button>
@@ -328,7 +342,7 @@ async function renderDocs() {
 }
 
 const pageHandlers = {
-  "index.html": renderMoneyTalkHome,
+  "index.html": renderXirenHome,
   "projects.html": renderProjects,
   "novel.html": renderNovels,
   "script.html": renderScripts,

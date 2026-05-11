@@ -3,53 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MoneyTalk Buddy - 轻松英语金钱对话 APP</title>
+  <title>喜人梗聊 Digital Human - 英语口语热点陪练</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
-<body class="money-app">
+<body class="xiren-app">
   <div id="top-nav"></div>
   <main class="main app-shell">
     <section class="hero app-hero">
       <div class="hero-copy">
-        <div class="version-banner">v1.0 MoneyTalk Buddy｜英语听说｜金钱话题｜角色群聊｜轻喜剧梗</div>
-        <p class="eyebrow">Speak money English without pressure</p>
-        <h1 class="page-title">用角色群聊练英语，把“钱”聊得轻松又地道</h1>
-        <p class="page-subtitle">围绕工资、预算、砍价、AA、投资、欠款、旅行花费等生活金钱场景，用小品式角色和梗制造低压力口语练习。</p>
+        <div class="version-banner">v2.0 喜人梗聊 Digital Human｜喜人奇妙夜｜小品梗翻译｜热点英语瞎聊天</div>
+        <p class="eyebrow">Your sketch-comedy English buddy</p>
+        <h1 class="page-title">我是懂《喜人奇妙夜》的数字人，陪你把热梗聊成英语口语</h1>
+        <p class="page-subtitle">围绕喜人小队、流量嘉宾、爆笑小品和网络热梗，把“哈哈哈”拆成能开口的英文闲聊：先听梗、再接梗、最后用自己的话复述观点。</p>
         <div class="hero-actions" aria-label="核心操作">
-          <a class="primary-cta" href="#group-chat">进入群聊练习</a>
-          <a class="secondary-cta" href="#speaking-lab">开始听说训练</a>
+          <a class="primary-cta" href="#group-chat">进入喜人群聊</a>
+          <a class="secondary-cta" href="#speaking-lab">练梗式口语</a>
         </div>
       </div>
-      <aside class="phone-preview" aria-label="APP 群聊预览">
-        <div class="phone-top"><span></span><b>Money Squad</b><em>Live</em></div>
+      <aside class="phone-preview" aria-label="喜人数字人群聊预览">
+        <div class="phone-top"><span></span><b>喜人热梗聊天室</b><em>Hot</em></div>
         <div id="hero-chat" class="chat-window compact-chat"></div>
-        <div class="voice-bar"><span>Hold to speak</span><strong>🎙️ 12s</strong></div>
+        <div class="voice-bar"><span>Tap a line to shadow</span><strong>🎭 English mode</strong></div>
       </aside>
     </section>
 
-    <section class="grid cards-4 metric-row" aria-label="产品指标">
-      <article class="card stat-card"><span>主题场景</span><strong>36+</strong><p>花钱、赚钱、借钱、谈薪、攒钱。</p></article>
-      <article class="card stat-card"><span>角色人设</span><strong>8</strong><p>老板、财迷、砍价王、理财嘴替。</p></article>
-      <article class="card stat-card"><span>听说模式</span><strong>3</strong><p>跟读、影子复述、即兴群聊。</p></article>
-      <article class="card stat-card"><span>每日节奏</span><strong>10min</strong><p>轻松完成一次英语社交热身。</p></article>
+    <section class="grid cards-4 metric-row" aria-label="产品能力">
+      <article class="card stat-card"><span>节目知识</span><strong>2季+</strong><p>覆盖公开信息中的喜人赛制、嘉宾和代表作品。</p></article>
+      <article class="card stat-card"><span>梗聊角色</span><strong>6</strong><p>数字人、考古粉、路人嘴替、翻译官一起陪聊。</p></article>
+      <article class="card stat-card"><span>口语模式</span><strong>4</strong><p>影子跟读、观点复述、reaction、即兴吐槽。</p></article>
+      <article class="card stat-card"><span>热点节奏</span><strong>Daily</strong><p>用“今天刷到什么”驱动口语话题更新。</p></article>
     </section>
 
     <section id="group-chat" class="card app-section">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Role group chat</p>
-          <h2>金钱主题群聊页</h2>
-          <p class="muted">选择一个钱相关话题，角色会用中英混合提示 + 英文台词抛梗，用户可以模仿、回复、接梗。</p>
+          <p class="eyebrow">Xiren group chat</p>
+          <h2>喜人奇妙夜梗聊页</h2>
+          <p class="muted">选择一个节目/热梗话题，数字人会用中英混合方式把小品笑点转成 casual English，让你像在群聊里自然接话。</p>
         </div>
-        <div id="topic-tabs" class="topic-tabs" aria-label="群聊主题切换"></div>
+        <div id="topic-tabs" class="topic-tabs" aria-label="喜人话题切换"></div>
       </div>
       <div class="chat-layout">
         <div id="main-chat" class="chat-window"></div>
         <aside class="prompt-panel">
           <h3>你的口语任务</h3>
           <ol id="mission-list"></ol>
-          <button id="random-prompt" class="mini-btn">换一个即兴问题</button>
-          <p id="prompt-output" class="speech-prompt">If you got a surprise bonus today, would you save it or spend it?</p>
+          <button id="random-prompt" class="mini-btn">换一个热点追问</button>
+          <p id="prompt-output" class="speech-prompt">Which Xiren sketch would you recommend to a foreign friend, and why?</p>
         </aside>
       </div>
     </section>
@@ -57,37 +57,37 @@
     <section id="characters" class="app-section">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Characters with memes</p>
-          <h2>角色 + 小品梗人设</h2>
-          <p class="muted">每个角色都有口头禅、金钱价值观和可模仿的英语表达，方便用户在群聊里自然开口。</p>
+          <p class="eyebrow">Digital personas</p>
+          <h2>喜人梗聊数字人角色</h2>
+          <p class="muted">每个角色负责一种聊天语气：懂节目、会翻译、能接梗、敢吐槽，让英语输出更像真实社交。</p>
         </div>
       </div>
-      <div id="money-characters" class="grid cards-4 role-grid"></div>
+      <div id="xiren-characters" class="grid cards-4 role-grid"></div>
     </section>
 
     <section id="speaking-lab" class="card app-section speaking-lab">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Listening & speaking</p>
-          <h2>听说训练台</h2>
-          <p class="muted">短句先听懂，再跟读，最后用自己的经历接一句。浏览器支持时可直接朗读英文示例。</p>
+          <p class="eyebrow">Meme-to-English lab</p>
+          <h2>小品梗英语口语训练台</h2>
+          <p class="muted">不照搬台词，只把笑点结构改写成日常英语表达；浏览器支持时可播放英文示例并跟读。</p>
         </div>
       </div>
       <div id="drill-list" class="drill-list"></div>
     </section>
 
-    <section class="grid cards-3 app-section">
+    <section id="hot-radar" class="grid cards-3 app-section">
       <article class="card feature-card">
-        <h3>轻松不尴尬</h3>
-        <p>角色先把梗抛出来，用户只需要接一句，不用硬背长篇课文。</p>
+        <h3>节目考古 + 新梗追踪</h3>
+        <p>围绕腾讯视频、米未出品的《喜人奇妙夜》系列，整理公开资料中的小队、嘉宾、作品和讨论点。</p>
       </article>
       <article class="card feature-card">
-        <h3>围绕真实钱事</h3>
-        <p>谈薪、预算、AA、砍价、冲动消费、投资踩坑，全是日常高频话题。</p>
+        <h3>热梗不硬翻</h3>
+        <p>把“抽象”“反转”“嘴替”“群像魅力”等中文互联网语感，改写成外国朋友也能听懂的表达。</p>
       </article>
       <article class="card feature-card">
-        <h3>听说互相交流</h3>
-        <p>每轮包含听力输入、口语输出和角色反馈，形成“听—说—再说”的闭环。</p>
+        <h3>像聊天一样练口语</h3>
+        <p>每轮都用 one-liner、reaction、follow-up question 逼自己开口，不再只背单词。</p>
       </article>
     </section>
   </main>

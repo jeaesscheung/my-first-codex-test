@@ -33,18 +33,21 @@ body{
   width:100vw;
   height:100vh;
   pointer-events:none;
-  z-index:0;
+  display:block;
+  opacity:1;
+  z-index:1;
 }
 
 .fx-ink-bg{
-  opacity:.95;
+  opacity:.98;
   mix-blend-mode:screen;
-  filter:saturate(122%) blur(.2px);
+  filter:saturate(135%) contrast(108%) blur(.15px);
 }
 
 .fx-cursor-trail{
-  opacity:.9;
+  opacity:.96;
   mix-blend-mode:screen;
+  z-index:2;
 }
 
 body::before{
@@ -91,9 +94,13 @@ body::after{
   body::after,
   .version-banner::after,
   .card::after,
-  .cursor-glow,
-  .fx-canvas {
+  .cursor-glow {
     display:none !important;
+  }
+
+  .fx-canvas{
+    display:block !important;
+    opacity:.86;
   }
 
   .card,
@@ -240,5 +247,6 @@ pre{white-space:pre-wrap;color:#ddd;margin:0}
   .card{
   z-index:4;
   opacity:1!important;transform:none!important}
-  body::after,.version-banner::after,.card::after,.fx-canvas{display:none!important}
+  body::after,.version-banner::after,.card::after{display:none!important}
+  .fx-canvas{display:block!important;opacity:.72!important}
 }

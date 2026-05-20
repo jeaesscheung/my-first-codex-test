@@ -402,7 +402,8 @@
 
       modeEl.querySelectorAll("[data-mode]").forEach((btn) => btn.addEventListener("click", () => setMode(btn.dataset.mode)));
       shotGridEl.querySelectorAll("[data-shot]").forEach((card) => card.addEventListener("click", () => setShotId(card.dataset.shot)));
-      detailEl.querySelector("#status-btn").addEventListener("click", advancePipeline);
+      const statusBtn = detailEl.querySelector("#status-btn");
+      if (statusBtn) statusBtn.addEventListener("click", advancePipeline);
     }
 
     renderWorkbench();

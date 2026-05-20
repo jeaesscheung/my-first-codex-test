@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>金泰智算中心 × 李旭 AI影视导演工作室</title>
+  <title>李旭导演工作室｜美学与动态叙事</title>
   <style>
     :root {
-      --bg: #070b16;
-      --bg-soft: #101a2e;
-      --panel: rgba(255, 255, 255, 0.06);
-      --line: rgba(255, 255, 255, 0.18);
-      --text: #ecf1ff;
-      --muted: #a9b4cb;
-      --accent: #74c9ff;
-      --accent-2: #9d7dff;
-      --accent-3: #ffc770;
-      --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      --bg: #f5f1ea;
+      --ink: #1f1a17;
+      --paper: rgba(255, 255, 255, 0.82);
+      --line: rgba(44, 30, 20, 0.2);
+      --primary: #7d2c2c;
+      --secondary: #2e4a62;
+      --accent: #b58a47;
+      --muted: #5a4f49;
+      --shadow: 0 20px 55px rgba(40, 25, 18, 0.18);
     }
 
     * { box-sizing: border-box; }
@@ -23,232 +22,272 @@
     html, body { margin: 0; }
 
     body {
-      font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
-      color: var(--text);
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Songti SC", "STSong", "SimSun", "Noto Serif CJK SC", serif;
+      line-height: 1.72;
       background:
-        radial-gradient(circle at 15% 12%, rgba(116, 201, 255, 0.22), transparent 24%),
-        radial-gradient(circle at 90% 18%, rgba(157, 125, 255, 0.18), transparent 28%),
-        linear-gradient(150deg, #060912 0%, #0a1222 45%, #090f1d 100%);
-      line-height: 1.6;
+        radial-gradient(circle at 10% 8%, rgba(181, 138, 71, 0.22), transparent 26%),
+        radial-gradient(circle at 85% 12%, rgba(125, 44, 44, 0.16), transparent 28%),
+        linear-gradient(150deg, #f7f3eb 0%, #f2eadd 55%, #efe4d4 100%);
+      overflow-x: hidden;
     }
 
-    .container { width: min(1160px, calc(100% - 36px)); margin: 0 auto; }
+    .container { width: min(1160px, calc(100% - 38px)); margin: 0 auto; }
 
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 9;
-      backdrop-filter: blur(14px);
-      background: rgba(7, 11, 22, 0.7);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(247, 242, 233, 0.72);
+      border-bottom: 1px solid rgba(58, 44, 33, 0.14);
     }
 
     .nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 0;
       gap: 14px;
+      padding: 12px 0;
       flex-wrap: wrap;
     }
 
-    .brand { font-weight: 700; letter-spacing: .03em; }
-    .brand span { color: var(--accent); }
+    .brand { font-size: 19px; font-weight: 600; letter-spacing: 0.06em; }
+    .brand span { color: var(--primary); }
 
-    .links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; }
     .links a {
       text-decoration: none;
       color: var(--muted);
-      font-size: 14px;
       border: 1px solid transparent;
-      padding: 6px 10px;
       border-radius: 999px;
+      font-size: 14px;
+      padding: 7px 12px;
+      transition: all .2s ease;
     }
-    .links a:hover { color: var(--text); border-color: var(--line); }
+    .links a:hover { color: var(--ink); border-color: var(--line); background: rgba(255,255,255,.5); }
 
     .hero {
-      margin-top: 30px;
-      padding: clamp(26px, 5vw, 58px);
+      margin-top: 32px;
       border: 1px solid var(--line);
       border-radius: 30px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+      padding: clamp(24px, 5vw, 58px);
+      background: var(--paper);
       box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -140px;
+      top: -80px;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: conic-gradient(from 45deg, rgba(181,138,71,.26), rgba(46,74,98,.18), rgba(125,44,44,.2));
+      filter: blur(14px);
+      opacity: .75;
+      z-index: -1;
+      animation: float 13s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(18px) rotate(8deg); }
     }
 
     .tag {
       display: inline-block;
-      font-size: 12px;
-      color: var(--accent-3);
-      border: 1px solid rgba(255, 199, 112, 0.5);
       border-radius: 999px;
-      padding: 6px 12px;
+      padding: 5px 11px;
+      border: 1px solid rgba(125, 44, 44, 0.28);
+      color: var(--primary);
+      font-size: 13px;
       letter-spacing: .08em;
-      text-transform: uppercase;
     }
 
-    h1 { font-size: clamp(34px, 6vw, 72px); line-height: 1.03; margin: 18px 0; }
-    .lead { color: var(--muted); max-width: 860px; font-size: 18px; }
+    h1 { font-size: clamp(32px, 6vw, 66px); line-height: 1.1; margin: 14px 0 18px; }
+    .lead { max-width: 860px; color: var(--muted); font-size: 18px; margin: 0; }
 
-    .hero-cards {
+    section { margin: 40px 0; }
+    h2 { margin: 0 0 14px; font-size: clamp(24px, 3.4vw, 36px); }
+
+    .grid-3, .grid-2 {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
-      margin-top: 28px;
     }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
     .card {
-      border: 1px solid var(--line);
       border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      box-shadow: 0 10px 28px rgba(39, 28, 22, .08);
       padding: 18px;
-      background: var(--panel);
     }
 
-    .card h3, section h2 { margin-top: 0; }
-    .card p, li { color: var(--muted); }
+    .card h3 { margin: 0 0 10px; color: var(--secondary); }
+    .card p, .card li { color: var(--muted); }
+    ul { margin: 0; padding-left: 18px; }
 
-    section { margin: 42px 0; }
-
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-    .timeline { border-left: 2px solid rgba(116, 201, 255, 0.4); padding-left: 16px; }
+    .timeline {
+      border-left: 2px solid rgba(46, 74, 98, 0.35);
+      padding-left: 14px;
+    }
 
     .cta {
       padding: 24px;
-      border: 1px solid rgba(157, 125, 255, 0.6);
-      border-radius: 22px;
-      background: linear-gradient(120deg, rgba(157, 125, 255, 0.2), rgba(116, 201, 255, 0.13));
+      border: 1px solid rgba(181,138,71,.45);
+      border-radius: 20px;
+      background: linear-gradient(120deg, rgba(181,138,71,.17), rgba(125,44,44,.08));
     }
 
     footer {
-      margin: 36px 0 24px;
-      color: #8e9cb9;
-      font-size: 13px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      margin: 34px 0 20px;
+      border-top: 1px solid var(--line);
       padding-top: 18px;
+      font-size: 13px;
+      color: #665750;
     }
 
-    @media (max-width: 860px) {
-      .hero-cards, .grid-2 { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .grid-3, .grid-2 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="container nav">
-      <div class="brand">金泰智算中心 × <span>李旭 AI影视导演工作室</span></div>
-      <nav class="links">
-        <a href="#定位">项目定位</a>
-        <a href="#工作流">工作流</a>
-        <a href="#算力">算力配置</a>
-        <a href="#路径">落地路径</a>
-      </nav>
+      <div class="brand">李旭导演工作室 · <span>LX DIRECTOR STUDIO</span></div>
+      <nav class="links" id="nav-links"></nav>
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero" id="定位">
-      <span class="tag">Director Website Proposal</span>
-      <h1>让导演的审美，获得工业级 AI 算力表达</h1>
-      <p class="lead">本网站用于呈现“青年作者导演 + AI影视工业中台 + 专属算力池 + 发行落地”整体方案，聚焦李旭导演的作者性表达与金泰智算中心的技术、生产与发行能力协同。</p>
-      <div class="hero-cards">
-        <article class="card">
-          <h3>导演主导</h3>
-          <p>由李旭导演负责主题、人物、镜头语言、节奏、声音判断与终审，保证作品的作者性和美学统一。</p>
-        </article>
-        <article class="card">
-          <h3>中台执行</h3>
-          <p>金泰负责剧本拆解、控制板生成、任务编排、资产归档、质检审片与成本追踪，保障稳定交付。</p>
-        </article>
-        <article class="card">
-          <h3>可发行闭环</h3>
-          <p>从样片到电影节申报、高校巡展、平台宣发和品牌合作，形成作品产出与传播的完整链路。</p>
-        </article>
-      </div>
-    </section>
+  <main class="container" id="app"></main>
 
-    <section id="工作流">
-      <h2>导演级 AI 影视工作流（四段）</h2>
-      <div class="grid-2">
-        <article class="card">
-          <h3>01 立项开发</h3>
-          <ul>
-            <li>输入：主题关键词、故事梗概、参考影片、预算与发行目标。</li>
-            <li>输出：项目开发书、AI可执行性评估、算力预算、制作周期。</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>02 剧本与主题分析</h3>
-          <ul>
-            <li>结构拆解、人物心理线、场景拆分、母题提取。</li>
-            <li>形成“人物内心—意象系统—节奏声音”创作辅助报告。</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>03 四大控制板</h3>
-          <ul>
-            <li>角色控制板：年龄、服装、情绪、姿态、禁止漂移项。</li>
-            <li>场景/分镜/风格控制板：空间调度、镜头参数、光影与色彩。</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>04 连续性圣经</h3>
-          <ul>
-            <li>轴线、机位、视线、光源、出入画、动作衔接统一管理。</li>
-            <li>原则：先连续性设计，再镜头生成；先预演，再正式产出。</li>
-          </ul>
-        </article>
-      </div>
-    </section>
+  <script>
+    const siteData = {
+      nav: [
+        { text: "创作定位", href: "#position" },
+        { text: "动态工作流", href: "#workflow" },
+        { text: "视觉语言", href: "#visual" },
+        { text: "年度路线", href: "#roadmap" }
+      ],
+      hero: {
+        tag: "DIRECTOR OFFICIAL SITE",
+        title: "李旭导演工作室：以东方美学，打造动态影像叙事现场",
+        lead: "网站整体以宋体系统为视觉骨架，强调留白、层次与色彩韵律。全部模块由数据驱动渲染，可按项目实时更新作品、流程、团队与宣发信息。"
+      },
+      positionCards: [
+        { title: "作者性核心", desc: "导演主导主题、人物与镜头调度，确保风格完整与情绪一致。" },
+        { title: "动态内容系统", desc: "页面内容由 JSON 数据驱动，新增项目、作品与档期无需改动版式结构。" },
+        { title: "审美表达", desc: "采用赭红、青黛、金砂三组配色，构建克制而有张力的东方电影质感。" }
+      ],
+      workflow: [
+        {
+          title: "01 概念发展",
+          points: ["输入主题、人物与时代语境。", "生成创作母题与风格板，并更新首页重点内容。"]
+        },
+        {
+          title: "02 剧本分析",
+          points: ["自动拆解场次、情绪、节奏与冲突。", "形成可追踪的导演工作台数据流。"]
+        },
+        {
+          title: "03 分镜生成",
+          points: ["按镜头组动态加载分镜、色脚本与音效意图。", "支持版本迭代与对比展示。"]
+        },
+        {
+          title: "04 发布传播",
+          points: ["自动同步媒体新闻、展映计划与合作动态。", "形成“创作—生产—传播”闭环。"]
+        }
+      ],
+      visual: [
+        {
+          title: "字体系统",
+          body: "全站默认宋体系列（Songti SC / STSong / SimSun），用于强化文学性与电影文本感。"
+        },
+        {
+          title: "配色系统",
+          body: "主色赭红表达作者锋芒，辅助青黛强调理性结构，金砂用于高光信息与品牌记忆点。"
+        }
+      ],
+      roadmap: [
+        { title: "Q1：官网上线", body: "完成首页、作品页、团队页与联系页动态化结构。" },
+        { title: "Q2：作品档案", body: "上线项目时间轴、分镜库与幕后手记模块。" },
+        { title: "Q3：媒体联动", body: "接入新闻流、采访与展映信息自动更新能力。" },
+        { title: "Q4：国际化", body: "推出中英双语动态站点与海外传播素材库。" }
+      ],
+      cta: "如需下一步，可继续扩展：作品详情模板、团队成员库、媒体中心、合作提案下载与后台内容管理。"
+    };
 
-    <section id="算力">
-      <h2>专属算力池与职责分工</h2>
-      <div class="grid-2">
+    function renderList(items) {
+      return items.map((item) => `<li>${item}</li>`).join("");
+    }
+
+    function renderCards(cards) {
+      return cards.map((c) => `
         <article class="card">
-          <h3>H100 集群（导演大脑）</h3>
-          <ul>
-            <li>私有知识库、剧本分析、提示词优化、多模型任务调度。</li>
-            <li>一致性检测、连续性检测、质检审片与成本统计。</li>
-          </ul>
+          <h3>${c.title}</h3>
+          <p>${c.desc || c.body}</p>
         </article>
-        <article class="card">
-          <h3>4卡 5090（视觉生产）</h3>
-          <ul>
-            <li>ComfyUI/Flux/SDXL 角色与场景概念图、分镜静帧、局部重绘。</li>
-            <li>视频前处理、图像增强、批量生成、风格迁移。</li>
-          </ul>
-        </article>
-      </div>
-      <article class="card" style="margin-top: 18px;">
-        <h3>闭源视频模型（高质量镜头）</h3>
-        <p>用于复杂表演、长镜头、情绪段落与关键宣发物料。策略建议：开源模型负责前期控制与资产沉淀，闭源模型负责核心镜头生成与最终质感提升。</p>
-      </article>
-    </section>
+      `).join("");
+    }
 
-    <section id="路径">
-      <h2>12个月落地路线图</h2>
-      <div class="grid-2">
-        <article class="card timeline">
-          <h3>0—30天：基础建设</h3>
-          <p>完成合作命名、专属算力池划定、资产库搭建、ComfyUI部署、第一版视觉控制板。</p>
-          <h3>30—90天：首支样片</h3>
-          <p>完成剧本、四大控制板、连续性圣经与5—10分钟样片交付。</p>
-        </article>
-        <article class="card timeline">
-          <h3>3—6个月：行业样板</h3>
-          <p>工作室发布、幕后纪录片、AI工作流分享、高校巡展与影展申报。</p>
-          <h3>6—12个月：模式复制</h3>
-          <p>打磨长片前期开发样板，形成招商材料与“金泰AI影视导演计划”。</p>
-        </article>
-      </div>
-    </section>
+    document.getElementById("nav-links").innerHTML = siteData.nav
+      .map((n) => `<a href="${n.href}">${n.text}</a>`)
+      .join("");
 
-    <section class="cta">
-      <h2>对外传播口径（建议）</h2>
-      <p>金泰智算中心将联合中国优秀青年导演李旭，成立 AI影视导演工作室。依托专属算力池、导演控制板系统和影视级资产管理平台，探索“作者导演 + AI工业化生产”的新型创作模式，推动 AI 影像从工具试验走向专业创作、稳定产出与发行落地。</p>
-    </section>
+    document.getElementById("app").innerHTML = `
+      <section class="hero" id="position">
+        <span class="tag">${siteData.hero.tag}</span>
+        <h1>${siteData.hero.title}</h1>
+        <p class="lead">${siteData.hero.lead}</p>
+        <div class="grid-3">${renderCards(siteData.positionCards)}</div>
+      </section>
 
-    <footer>
-      本页面为导演工作室官方网站规划稿（V1）。如需我继续，我可以直接扩展：作品展示页、团队页、媒体页、联系合作页，并补全移动端交互与英文版本。
-    </footer>
-  </main>
+      <section id="workflow">
+        <h2>导演动态工作流</h2>
+        <div class="grid-2">
+          ${siteData.workflow.map((item) => `
+            <article class="card">
+              <h3>${item.title}</h3>
+              <ul>${renderList(item.points)}</ul>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section id="visual">
+        <h2>美学布局与视觉表达</h2>
+        <div class="grid-2">${renderCards(siteData.visual)}</div>
+      </section>
+
+      <section id="roadmap">
+        <h2>动态内容年度规划</h2>
+        <div class="grid-2">
+          ${siteData.roadmap.map((item) => `
+            <article class="card timeline">
+              <h3>${item.title}</h3>
+              <p>${item.body}</p>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+
+      <section class="cta">
+        <h2>下一步扩展建议</h2>
+        <p>${siteData.cta}</p>
+      </section>
+
+      <footer>
+        李旭导演工作室官方网站提案（动态版）。页面内容已支持数据驱动渲染，可持续迭代更新。
+      </footer>
+    `;
+  </script>
 </body>
 </html>

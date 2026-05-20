@@ -139,6 +139,35 @@
       border-left: 2px solid rgba(46, 74, 98, 0.35);
       padding-left: 14px;
     }
+    .workbench {
+      display: grid;
+      grid-template-columns: 1.3fr .9fr;
+      gap: 16px;
+    }
+    .mode-switch { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 12px;
+      cursor: pointer;
+      background: rgba(255,255,255,.6);
+      font-size: 13px;
+    }
+    .chip.active { background: var(--secondary); color: #fff; border-color: transparent; }
+    .shot-grid { display: grid; gap: 10px; }
+    .shot-card { cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+    .shot-card.active { border-color: rgba(46, 74, 98, 0.6); box-shadow: 0 12px 28px rgba(46, 74, 98, .14); transform: translateY(-2px); }
+    .kv { display: grid; grid-template-columns: 80px 1fr; gap: 6px; font-size: 14px; }
+    .queue-row { margin: 12px 0; }
+    .queue-bar {
+      height: 10px; border-radius: 999px; background: rgba(46,74,98,.12); overflow: hidden;
+      position: relative;
+    }
+    .queue-fill { height: 100%; background: linear-gradient(90deg, #2e4a62, #b58a47); transition: width .35s ease; }
+    .score-badge { font-size: 32px; color: var(--primary); margin: 6px 0; font-weight: 700; }
+    .status-flow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .status-step { padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); font-size: 12px; }
+    .status-step.active { background: rgba(125,44,44,.13); border-color: rgba(125,44,44,.36); }
 
     .cta {
       padding: 24px;
@@ -156,7 +185,7 @@
     }
 
     @media (max-width: 900px) {
-      .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .grid-3, .grid-2, .workbench { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -222,8 +251,24 @@
         { title: "Q3：媒体联动", body: "接入新闻流、采访与展映信息自动更新能力。" },
         { title: "Q4：国际化", body: "推出中英双语动态站点与海外传播素材库。" }
       ],
-      cta: "如需下一步，可继续扩展：作品详情模板、团队成员库、媒体中心、合作提案下载与后台内容管理。"
+      cta: "如需下一步，可继续扩展：作品详情模板、团队成员库、媒体中心、合作提案下载与后台内容管理。",
+      shots: [
+        { id: "S01", title: "雨夜对峙", prompt: "霓虹雨夜，主角逆光站立，情绪压迫，35mm电影颗粒", lens: "中近景", move: "缓慢推进", risk: "反射过亮导致人脸细节丢失", score: 91 },
+        { id: "S02", title: "走廊追逐", prompt: "狭长走廊，高对比硬光，急促呼吸，手持跟拍", lens: "全景", move: "手持跟随", risk: "运动模糊过强造成动作不可读", score: 84 },
+        { id: "S03", title: "窗前独白", prompt: "清晨冷调窗光，人物侧脸，情绪克制，低饱和", lens: "特写", move: "轻微摇镜", risk: "肤色偏灰，情绪层次不足", score: 95 }
+      ],
+      pipeline: ["解析剧本", "生成分镜", "锁定角色", "进入质检"]
     };
+
+    function useState(initial) {
+      let state = initial;
+      const get = () => state;
+      const set = (next) => {
+        state = typeof next === "function" ? next(state) : next;
+        renderWorkbench();
+      };
+      return [get, set];
+    }
 
     function renderList(items) {
       return items.map((item) => `<li>${item}</li>`).join("");
@@ -237,6 +282,10 @@
         </article>
       `).join("");
     }
+    const [getMode, setMode] = useState("剧本模式");
+    const [getShotId, setShotId] = useState(siteData.shots[0].id);
+    const [getQueueProgress, setQueueProgress] = useState({ H100: 18, RTX5090: 42 });
+    const [getPipelineStep, setPipelineStep] = useState(0);
 
     document.getElementById("nav-links").innerHTML = siteData.nav
       .map((n) => `<a href="${n.href}">${n.text}</a>`)
@@ -284,10 +333,79 @@
         <p>${siteData.cta}</p>
       </section>
 
+      <section id="ai-workbench">
+        <h2>AI 导演工作台 Demo</h2>
+        <div class="workbench">
+          <article class="card">
+            <div class="mode-switch" id="mode-switch"></div>
+            <div class="shot-grid" id="shot-grid"></div>
+          </article>
+          <aside class="card" id="detail-panel"></aside>
+        </div>
+      </section>
+
       <footer>
         李旭导演工作室官方网站提案（动态版）。页面内容已支持数据驱动渲染，可持续迭代更新。
       </footer>
     `;
+
+    function animateQueue() {
+      const nextH100 = Math.min(100, getQueueProgress().H100 + 14);
+      const next5090 = Math.min(100, getQueueProgress().RTX5090 + 11);
+      setQueueProgress({ H100: nextH100, RTX5090: next5090 });
+    }
+
+    function advancePipeline() {
+      setPipelineStep((prev) => (prev + 1) % siteData.pipeline.length);
+      animateQueue();
+    }
+
+    function renderWorkbench() {
+      const current = siteData.shots.find((s) => s.id === getShotId()) || siteData.shots[0];
+      const modeEl = document.getElementById("mode-switch");
+      const shotGridEl = document.getElementById("shot-grid");
+      const detailEl = document.getElementById("detail-panel");
+      if (!modeEl || !shotGridEl || !detailEl) return;
+
+      const modes = ["剧本模式", "分镜模式", "审片模式"];
+      modeEl.innerHTML = modes.map((mode) => `<button class="chip ${getMode() === mode ? "active" : ""}" data-mode="${mode}">${mode}</button>`).join("");
+
+      shotGridEl.innerHTML = siteData.shots.map((shot) => `
+        <article class="card shot-card ${shot.id === current.id ? "active" : ""}" data-shot="${shot.id}">
+          <h3>${shot.id} · ${shot.title}</h3>
+          <p>景别：${shot.lens} ｜ 运镜：${shot.move}</p>
+        </article>
+      `).join("");
+
+      detailEl.innerHTML = `
+        <h3>${current.id} 镜头详情</h3>
+        <div class="kv"><strong>提示词</strong><span>${current.prompt}</span></div>
+        <div class="kv"><strong>景别</strong><span>${current.lens}</span></div>
+        <div class="kv"><strong>运镜</strong><span>${current.move}</span></div>
+        <div class="kv"><strong>风险</strong><span>${current.risk}</span></div>
+        <hr style="border:none;border-top:1px solid var(--line);margin:14px 0;" />
+        <h3>任务队列分配</h3>
+        <div class="queue-row">H100
+          <div class="queue-bar"><div class="queue-fill" style="width:${getQueueProgress().H100}%"></div></div>
+        </div>
+        <div class="queue-row">RTX 5090
+          <div class="queue-bar"><div class="queue-fill" style="width:${getQueueProgress().RTX5090}%"></div></div>
+        </div>
+        <h3>质检评分面板</h3>
+        <div class="score-badge">${current.score}</div>
+        <p style="margin-top:0;color:var(--muted)">当前模式：${getMode()}，评分会随镜头上下文变化。</p>
+        <button class="chip" id="status-btn">推进生成状态</button>
+        <div class="status-flow">
+          ${siteData.pipeline.map((p, idx) => `<span class="status-step ${idx <= getPipelineStep() ? "active" : ""}">${p}</span>`).join("")}
+        </div>
+      `;
+
+      modeEl.querySelectorAll("[data-mode]").forEach((btn) => btn.addEventListener("click", () => setMode(btn.dataset.mode)));
+      shotGridEl.querySelectorAll("[data-shot]").forEach((card) => card.addEventListener("click", () => setShotId(card.dataset.shot)));
+      detailEl.querySelector("#status-btn").addEventListener("click", advancePipeline);
+    }
+
+    renderWorkbench();
   </script>
 </body>
 </html>
